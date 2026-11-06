@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import plotstyle  # noqa: F401  (Korean font)
 from assess_measured import assess, plate_D
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")

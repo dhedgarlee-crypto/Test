@@ -58,7 +58,10 @@ def graded_nodes(a, n, edge_bias=0.85):
 
 
 class QuarterPlate:
-    def __init__(self, Lx, Ly, Dstar, k_nat, areal_mass, nx=40, ny=None, edge_bias=0.85):
+    def __init__(self, Lx, Ly, Dstar, k_nat, areal_mass, nx=40, ny=None, edge_bias=0.85,
+                 zone_fn=None, zone_props=None):
+        """zone_fn(x, y) -> zone index and zone_props[i] = (Dstar, k_nat, areal_mass) give
+        piecewise properties (e.g. unit array vs. edge frame); otherwise uniform."""
         ny = ny or nx
         self.nx, self.ny = nx, ny
         self.ax, self.ay = Lx/2, Ly/2
@@ -73,7 +76,7 @@ class QuarterPlate:
         def subsample(hx, hy):
             return np.array([_element_shape(xi, eta, hx, hy)[0] for xi in sub for eta in sub])
 
-        def element(hx, hy):
+        def element(hx, hy, Dstar, k_nat):
             Ke = np.zeros((16, 16)); fT = np.zeros(16); fq = np.zeros(16)
             # scale unit-size shape functions: slope dofs ~ h, 2nd derivatives ~ 1/h^2
             S = np.ones(16); S[1::4] = hx; S[2::4] = hy; S[3::4] = hx*hy
@@ -88,14 +91,18 @@ class QuarterPlate:
 
         nn = (nx+1)*(ny+1); self.ndof = 4*nn
         node = lambda ix, iy: ix*(ny+1) + iy
-        edofs, Ks, fTs, fqs, areas, Nsubs = [], [], [], [], [], []
+        edofs, Ks, fTs, fqs, areas, Nsubs, qg, zid = [], [], [], [], [], [], [], []
         cache = {}
         for ex in range(nx):
             for ey in range(ny):
                 hx, hy = self.xs[ex+1]-self.xs[ex], self.ys[ey+1]-self.ys[ey]
-                key = (round(hx, 12), round(hy, 12))
+                xc, yc = 0.5*(self.xs[ex]+self.xs[ex+1]), 0.5*(self.ys[ey]+self.ys[ey+1])
+                z = int(zone_fn(xc, yc)) if zone_fn is not None else 0
+                Dz, kz, mz = zone_props[z] if zone_props is not None else (Dstar, k_nat, areal_mass)
+                qg.append(-mz*G); zid.append(z)
+                key = (round(hx, 12), round(hy, 12), z)
                 if key not in cache:
-                    cache[key] = element(hx, hy) + (subsample(hx, hy),)
+                    cache[key] = element(hx, hy, Dz, np.asarray(kz, float)) + (subsample(hx, hy),)
                 Ke, fT, fq, Ns = cache[key]
                 Nsubs.append(Ns)
                 ns = [node(ex+i, ey+j) for (i, j) in LOCAL_NODES]
@@ -115,7 +122,8 @@ class QuarterPlate:
         # np.bincount instead of np.add.at (broadcasting add.at is unreliable in some numpy builds)
         self.fT = np.bincount(self.edofs.ravel(), weights=np.array(fTs).ravel(), minlength=self.ndof)
         self.fq_e = np.array(fqs)  # element load vectors for unit upward pressure
-        self.q_grav = -areal_mass*G
+        self.q_grav = np.array(qg)   # per-element gravity load (Pa, downward negative)
+        self.zone = np.array(zid)
         # symmetry constraints: x=0 -> w_x = w_xy = 0 ; y=0 -> w_y = w_xy = 0
         fixed = []
         for iy in range(ny+1):
@@ -230,3 +238,11 @@ class QuarterPlate:
         x = np.concatenate([-self.xs[::-1][:-1], self.xs])
         y = np.concatenate([-self.ys[::-1][:-1], self.ys])
         return x, y, Wf
+
+    def free_shape(self):
+        """Gravity-free natural shape (linear), centre held at w = 0. Returns nodal w."""
+        fixed = np.unique(np.concatenate([self.sym_fixed, [self.wdof[0]]]))
+        free = np.setdiff1d(np.arange(self.ndof), fixed)
+        u = np.zeros(self.ndof)
+        u[free] = spla.spsolve(self.K[free][:, free].tocsc(), self.fT[free])
+        return u[self.wdof]
