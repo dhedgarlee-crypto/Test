@@ -161,13 +161,13 @@ td:first-child { color: var(--muted); white-space: nowrap; }
 <div class="wrap">
   <header>
     <div class="eyebrow">2.5D Advanced Package · 교육용 시각화</div>
-    <h1>I-Cube E 패키지 빌드업 과정, CoWoS-S와 비교</h1>
-    <p class="lede">삼성 I-Cube E는 실리콘 인터포저 전체를 쓰지 않고 RDL 인터포저 안에 작은 실리콘 브리지를 묻어 로직–HBM 사이 고밀도 배선만 실리콘으로 처리합니다. TSMC CoWoS-S는 TSV가 뚫린 실리콘 인터포저 전체를 씁니다. 탭을 바꿔 각 공정을 따로 보거나, '나란히 비교'에서 같은 공정 단계끼리 맞춰 동시에 볼 수 있습니다.</p>
+    <h1>I-Cube E 패키지 빌드업 과정, CoWoS-L과 비교</h1>
+    <p class="lede">삼성 I-Cube E와 TSMC CoWoS-L은 둘 다 실리콘 인터포저 전체를 쓰지 않고, RDL 인터포저 안에 작은 실리콘 브리지를 묻어 로직–HBM 사이 고밀도 배선만 실리콘으로 처리합니다. 탭을 바꿔 각 공정을 따로 보거나, '나란히 비교'에서 같은 공정 단계끼리 맞춰 동시에 볼 수 있습니다.</p>
   </header>
 
   <div class="tabs" role="tablist" aria-label="보기 모드">
     <button class="tab" role="tab" id="tab-e" data-mode="e" type="button">I-Cube E</button>
-    <button class="tab" role="tab" id="tab-s" data-mode="s" type="button">CoWoS-S</button>
+    <button class="tab" role="tab" id="tab-s" data-mode="s" type="button">CoWoS-L</button>
     <button class="tab" role="tab" id="tab-c" data-mode="c" type="button">나란히 비교</button>
   </div>
 
@@ -178,8 +178,8 @@ td:first-child { color: var(--muted); white-space: nowrap; }
         <svg class="scene" id="sceneE" viewBox="0 0 1000 590" role="img" aria-label="I-Cube E 단면 빌드업"></svg>
       </div>
       <div class="stage" id="stageS">
-        <div class="stage-head"><span><span class="tag" style="background:var(--alt)"></span><b>CoWoS-S</b> · TSV 실리콘 인터포저</span><span class="st" id="stS"></span></div>
-        <svg class="scene" id="sceneS" viewBox="0 0 1000 590" role="img" aria-label="CoWoS-S 단면 빌드업"></svg>
+        <div class="stage-head"><span><span class="tag" style="background:var(--alt)"></span><b>CoWoS-L</b> · RDL 인터포저 + LSI 브리지</span><span class="st" id="stS"></span></div>
+        <svg class="scene" id="sceneS" viewBox="0 0 1000 590" role="img" aria-label="CoWoS-L 단면 빌드업"></svg>
       </div>
     </div>
     <div class="controls">
@@ -213,30 +213,31 @@ td:first-child { color: var(--muted); white-space: nowrap; }
         <li>I-Cube E는 실리콘 인터포저를 실리콘 브리지로 대체하고, 재배선층(RDL)에 브리지를 삽입(Embedded)하는 구조입니다. <span class="cite">전자신문, 2023.11</span></li>
         <li>HBM 12개 패키지 기준, 실리콘 인터포저 방식 대비 성능 저하 없이 약 22% 비용 절감이 가능하다고 삼성전자가 밝혔습니다. <span class="cite">전자신문, 2023.11</span></li>
         <li>I-Cube E는 HBM 최대 12개 구성으로 확장해 2025년 양산을 계획했습니다. <span class="cite">Samsung Foundry Forum 보도, 3D InCites</span></li>
-        <li>CoWoS-S는 전면 실리콘 인터포저를 쓰며, 인터포저는 최대 약 3.3배 레티클(약 2,700 mm²)까지 지원합니다. 그보다 크면 TSMC는 CoWoS-L(RDL 인터포저 + LSI 브리지)이나 CoWoS-R(RDL 인터포저)을 권장합니다. <span class="cite">TSMC 3DFabric</span></li>
-        <li>구조로 보면 I-Cube E에 가장 가까운 TSMC 기술은 CoWoS-L, 인텔 기술은 EMIB입니다. 삼성의 CoWoS-S 대응 기술은 I-Cube S입니다.</li>
+        <li>CoWoS-L은 칩 라스트 흐름입니다. 캐리어 위에 TIV를 만들고 LSI(KGD)를 배치한 뒤 몰딩·CMP, 전면 RDL, 칩 접합·언더필·봉지, 후면 RDL 순서로 진행합니다. LSI는 TSV와 다마신 구리 배선으로 만듭니다. <span class="cite">ECTC 2023 논문</span></li>
+        <li>CoWoS-L은 SoC 아래에 독립형 eDTC(임베디드 딥 트렌치 커패시터)를 넣어 전원 품질을 높일 수 있습니다. <span class="cite">TSMC CoWoS 소개 인용 자료</span></li>
+        <li>TSMC는 약 3.3배 레티클(약 2,700 mm²)보다 큰 인터포저에는 CoWoS-S 대신 CoWoS-L이나 CoWoS-R을 권장합니다. <span class="cite">TSMC 3DFabric</span></li>
       </ul>
     </div>
     <div class="card">
       <h2>구조 비교</h2>
       <div class="tbl">
         <table>
-          <thead><tr><th>항목</th><th>I-Cube E</th><th>CoWoS-S (I-Cube S도 같은 계열)</th></tr></thead>
+          <thead><tr><th>항목</th><th>I-Cube E</th><th>CoWoS-L</th></tr></thead>
           <tbody>
-            <tr><td>인터포저</td><td>RDL(유기) 인터포저 + 부분 실리콘 브리지</td><td>전면 실리콘 인터포저</td></tr>
-            <tr><td>출발 기판</td><td>임시 유리 캐리어 (나중에 제거)</td><td>실리콘 웨이퍼 자체가 인터포저</td></tr>
-            <tr><td>칩 간 고밀도 배선</td><td>로직–HBM 경계 아래 브리지</td><td>인터포저 전체의 BEOL (서브 μm)</td></tr>
-            <tr><td>수직 연결</td><td>몰드 관통 Cu 포스트 (일반 구조 기준)</td><td>TSV (실리콘 관통 전극)</td></tr>
-            <tr><td>하면 노출</td><td>캐리어 디본딩만으로 노출</td><td>상면 캐리어 본딩 → 백그라인딩으로 TSV 노출</td></tr>
-            <tr><td>대면적화</td><td>RDL 공정으로 확장이 쉬움</td><td>약 3.3배 레티클까지</td></tr>
-            <tr><td>비용</td><td>Si 인터포저 대비 약 22% 절감 (12-HBM, 삼성 발표)</td><td>가장 높은 편</td></tr>
+            <tr><td>인터포저</td><td>RDL 인터포저 + 임베디드 실리콘 브리지</td><td>RDL 인터포저 + LSI 브리지</td></tr>
+            <tr><td>수직 연결</td><td>몰드 관통 Cu 포스트 (일반 구조 기준)</td><td>TIV (Through Insulator Via)</td></tr>
+            <tr><td>브리지 TSV</td><td>공개되지 않음 (그림은 TSV 없는 형태)</td><td>LSI에 TSV 포함</td></tr>
+            <tr><td>내장 수동소자</td><td>공개되지 않음</td><td>SoC 아래 독립형 eDTC 가능</td></tr>
+            <tr><td>후면 RDL</td><td>공개되지 않음 (그림에서는 생략)</td><td>디본딩 후 후면 RDL 형성</td></tr>
+            <tr><td>칩 실장 순서</td><td>칩 라스트 (인터포저 먼저)</td><td>칩 라스트 (인터포저 먼저)</td></tr>
+            <tr><td>공개된 비용·규모</td><td>Si 인터포저 대비 약 22% 절감 (12-HBM, 삼성 발표)</td><td>3.3배 레티클 초과 대형 인터포저용</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <p class="note"><b>읽기 전에:</b> 삼성전자는 I-Cube E의 구조 개념과 비용 효과를 공개했지만 상세 공정 순서·재료·치수는 공개하지 않았습니다. I-Cube E 단계는 공개된 구조에 업계 논문·보도에 나온 임베디드 브리지 RDL 인터포저의 일반적인 칩 라스트 공정을 맞춰 재구성한 교육용 예시입니다. CoWoS-S 단계도 공개된 CoW → oS 흐름을 단순화한 것입니다. 두 공정 모두 실제 양산 공정과 순서·구성이 다를 수 있습니다. 출처: <a href="https://www.etnews.com/20231109000166" target="_blank" rel="noopener">전자신문 「'인텔·TSMC 대항마' 삼성, 차세대 '2.3D 패키징' 개발」</a>, <a href="https://www.3dincites.com/?p=84689" target="_blank" rel="noopener">3D InCites – Samsung Foundry Forum</a>, <a href="https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm" target="_blank" rel="noopener">TSMC 3DFabric – CoWoS</a>, <a href="https://www.tsmc.com/english/dedicatedFoundry/technology/platform_HPC_tech_WLSI.htm" target="_blank" rel="noopener">TSMC – HPC Wafer Level System Integration</a>, <a href="https://news.samsungsemiconductor.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%b0%a8%ec%84%b8%eb%8c%80-2-5d-%ed%8c%a8%ed%82%a4%ec%a7%95-%ec%86%94%eb%a3%a8%ec%85%98-h-cube-%ea%b0%9c%eb%b0%9c/" target="_blank" rel="noopener">삼성전자 반도체 뉴스룸</a>.</p>
+  <p class="note"><b>읽기 전에:</b> 삼성전자는 I-Cube E의 구조 개념과 비용 효과만 공개했고, 상세 공정 순서·재료·치수는 공개하지 않았습니다. 이 페이지의 I-Cube E 단계는 임베디드 브리지 RDL 인터포저의 일반적인 칩 라스트 공정으로 재구성한 예시입니다. 그래서 공개 논문을 바탕으로 그린 CoWoS-L과 흐름이 거의 같아 보입니다. 표에서 '공개되지 않음'으로 적은 항목은 실제로 같을 수도 다를 수도 있습니다. CoWoS-L 단계도 공개 논문의 흐름을 단순화한 것이며, 두 공정 모두 실제 양산 공정과 다를 수 있습니다. 출처: <a href="https://www.etnews.com/20231109000166" target="_blank" rel="noopener">전자신문 「'인텔·TSMC 대항마' 삼성, 차세대 '2.3D 패키징' 개발」</a>, <a href="https://www.3dincites.com/?p=84689" target="_blank" rel="noopener">3D InCites – Samsung Foundry Forum</a>, <a href="https://conferences.computer.org/ectc/pdfs/ECTC2023-1NkkviSxgDnmPjptC1ysqm/349800b022/349800b022.pdf" target="_blank" rel="noopener">ECTC 2023 CoWoS-L 논문</a>, <a href="https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm" target="_blank" rel="noopener">TSMC 3DFabric – CoWoS</a>, <a href="https://eetimes.itmedia.co.jp/ee/spv/2112/16/news034_2.html" target="_blank" rel="noopener">EE Times Japan – TSMC 패키징 기술</a>.</p>
 </div>
 
 <script>
@@ -246,8 +247,8 @@ td:first-child { color: var(--muted); white-space: nowrap; }
 
   var MATS = {
     carrier: ["유리 캐리어", "--m-carrier"], release: ["임시 접착·박리층", "--m-release"],
-    si: ["실리콘 인터포저", "--m-si"], ox: ["BEOL 절연막", "--m-ox"],
-    cu: ["구리(Cu)", "--m-cu"], bridge: ["실리콘 브리지", "--m-bridge"], mold: ["EMC 몰드", "--m-mold"],
+    si: ["eDTC (실리콘)", "--m-si"], ox: ["BEOL 절연막", "--m-ox"],
+    cu: ["구리(Cu)", "--m-cu"], bridge: ["실리콘 브리지 / LSI", "--m-bridge"], mold: ["EMC 몰드", "--m-mold"],
     pi: ["RDL 절연막(PI)", "--m-pi"], solder: ["솔더 범프", "--m-solder"], soc: ["로직 SoC", "--m-soc"],
     hbm: ["HBM 스택", "--m-hbm"], uf: ["언더필", "--m-uf"], sub: ["패키지 기판", "--m-sub"], lid: ["리드·TIM", "--m-lid"]
   };
@@ -320,87 +321,96 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       w: "한 패키지 안에서 실리콘의 미세 배선과 RDL의 대면적·저비용을 함께 쓰는 것이 I-Cube E 접근법의 요지입니다." }
   ];
 
-  // ================= CoWoS-S 공정 =================
+  // ================= CoWoS-L 공정 (ECTC 2023 공개 흐름 기반) =================
   var STEPS_S = [
-    { ph: "A. 인터포저 웨이퍼 (Fab)", t: "실리콘 인터포저 웨이퍼", mats: ["si"],
-      d: "트랜지스터 없이 배선만 만들 두꺼운 실리콘 웨이퍼에서 시작합니다. 이 웨이퍼 자체가 인터포저가 됩니다.",
-      p: ["두께는 처음엔 수백 μm, 나중에 100 μm 안팎으로 얇게 갈아 냄", "인터포저 크기는 레티클 여러 장을 이어 붙여(스티칭) 확대"],
-      w: "인터포저를 반도체 팹 공정으로 만들기 때문에 서브 μm 배선이 가능하지만, 면적이 클수록 실리콘과 팹 공정 비용이 함께 커집니다." },
-    { ph: "A. 인터포저 웨이퍼 (Fab)", t: "TSV 식각", mats: ["si"],
-      d: "딥 반응성 이온 식각(DRIE)으로 실리콘에 깊고 좁은 구멍을 뚫습니다. 아직 웨이퍼 끝까지 관통하지 않은 '블라인드' 상태입니다.",
-      p: ["종횡비가 높은 구멍을 균일하게 뚫는 것이 핵심", "구멍 깊이가 최종 인터포저 두께를 결정"],
-      w: "I-Cube E의 Cu 포스트는 레지스트 패턴에 도금만 하면 되지만, TSV는 실리콘을 직접 식각해야 해서 장비와 공정 시간이 더 듭니다." },
-    { ph: "A. 인터포저 웨이퍼 (Fab)", t: "TSV 절연·Cu 충전·CMP", mats: ["si", "cu"],
-      d: "구멍 벽에 산화막 라이너와 배리어·시드층을 입히고 구리로 채운 뒤, 화학기계연마(CMP)로 윗면을 평탄화합니다.",
-      p: ["라이너가 구리와 실리콘을 전기적으로 절연", "구멍 안에 빈틈 없이 구리를 채우는 것이 수율에 중요"],
-      w: "실리콘은 반도체라서 구리와 바로 닿으면 누설 전류가 생깁니다. 그래서 절연 라이너가 꼭 필요합니다." },
-    { ph: "A. 인터포저 웨이퍼 (Fab)", t: "BEOL 배선층 형성", mats: ["ox", "cu"],
-      d: "팹의 구리 다마신 공정으로 산화막 안에 여러 층의 미세 배선을 만듭니다. 인터포저 전체 면적에 서브 μm급 배선을 깔 수 있습니다.",
-      p: ["로직–HBM 연결이 인터포저 BEOL 안에서 바로 이루어짐", "필요하면 딥 트렌치 커패시터 등을 함께 넣기도 함"],
-      w: "인터포저 어디든 미세 배선을 쓸 수 있는 것이 CoWoS-S의 장점입니다. I-Cube E는 이 미세 배선을 브리지 영역에만 둡니다." },
-    { ph: "A. 인터포저 웨이퍼 (Fab)", t: "마이크로 범프 형성", mats: ["cu", "solder"],
-      d: "인터포저 최상층 패드 위에 Cu 필러와 솔더 캡으로 된 마이크로 범프를 만듭니다.",
+    { ph: "A. 인터포저 코어", t: "캐리어 준비", mats: ["carrier", "release"],
+      d: "CoWoS-L도 캐리어 웨이퍼 위에서 RDL 인터포저를 먼저 만들고 칩을 나중에 올리는 칩 라스트 방식입니다. 캐리어에 임시 접착·박리층을 입힙니다.",
+      p: ["I-Cube E와 출발점이 같음", "모든 인터포저 층을 이 캐리어 위에 쌓음"],
+      w: "RDL 인터포저는 얇아서 공정 중에 단단한 지지판이 필요합니다. 마지막에 떼어 냅니다." },
+    { ph: "A. 인터포저 코어", t: "TIV 형성", mats: ["cu"],
+      d: "캐리어 위에 도금으로 구리 기둥 TIV(Through Insulator Via)를 세웁니다. 몰드를 관통해 인터포저 위아래를 잇는 수직 배선이 됩니다.",
+      p: ["LSI와 eDTC가 놓일 자리는 비워 둠", "전원·접지와 일반 신호가 주로 지나감"],
+      w: "I-Cube E 그림의 Cu 포스트와 같은 역할입니다. TSMC는 이 구조를 TIV라고 부릅니다." },
+    { ph: "A. 인터포저 코어", t: "LSI · eDTC 배치", mats: ["bridge", "si"],
+      d: "검증된(KGD) LSI(Local Silicon Interconnect) 칩을 SoC–HBM 경계 아래에 배치합니다. LSI는 TSV와 다마신 구리 배선으로 만들어집니다. SoC 아래에는 독립형 eDTC(임베디드 딥 트렌치 커패시터)를 함께 넣을 수 있습니다.",
+      p: ["LSI의 TSV로 아래쪽에서도 전원·신호를 받을 수 있음", "eDTC는 SoC 바로 아래에서 전원 노이즈를 줄이는 커패시터"],
+      w: "TSV가 있는 LSI는 위아래 모두 연결할 수 있어 브리지 영역 아래로도 전원을 넣을 수 있습니다. I-Cube E 브리지에 TSV가 있는지는 공개되지 않았습니다." },
+    { ph: "A. 인터포저 코어", t: "몰딩", mats: ["mold"],
+      d: "몰딩 컴파운드로 LSI, eDTC, TIV 사이 틈을 채워 재구성 웨이퍼를 만듭니다.",
+      p: ["LSI와 TIV를 하나의 몸체로 고정", "윗면은 두껍게 덮었다가 다음 단계에서 깎음"],
+      w: "몰드에 묻히면서 LSI가 인터포저 안에 내장됩니다. I-Cube E의 '임베디드'와 같은 개념입니다." },
+    { ph: "A. 인터포저 코어", t: "CMP 평탄화", mats: ["mold", "cu", "bridge"],
+      d: "CMP로 윗면을 평탄화해 TIV 끝과 LSI 접속부를 같은 높이로 드러냅니다.",
+      p: ["노출된 금속 면이 전면 RDL 패드가 됨", "평탄도가 RDL 품질을 좌우"],
+      w: "미세 RDL은 바닥이 고르지 않으면 선폭을 유지하기 어렵습니다." },
+    { ph: "B. 재배선·접속", t: "전면 RDL 형성", mats: ["pi", "cu"],
+      d: "인터포저 전면에 RDL을 만들어 마이크로 범프 위치와 TIV, LSI를 연결합니다.",
+      p: ["절연막 → 비아 → 구리 배선 반복", "LSI 위쪽은 짧고 촘촘한 연결이 집중"],
+      w: "넓은 면적은 RDL로, 가장 촘촘한 칩 간 연결은 LSI로 나눠 맡습니다." },
+    { ph: "B. 재배선·접속", t: "마이크로 범프 형성", mats: ["cu", "solder"],
+      d: "RDL 최상층 패드 위에 Cu 필러와 솔더 캡으로 된 마이크로 범프를 만듭니다.",
       p: ["로직과 HBM 접합용 접점", "범프 높이 균일성이 접합 수율에 중요"],
-      w: "두 공정 모두 칩 접합 방식은 비슷합니다. 차이는 그 아래 인터포저가 무엇으로 되어 있느냐입니다." },
-    { ph: "B. CoW (Chip on Wafer)", t: "CoW: SoC + HBM 실장", mats: ["soc", "hbm"],
-      d: "SoC와 HBM을 뒤집어 인터포저 웨이퍼 위 범프에 정렬하고 접합합니다. CoWoS 이름의 'CoW(Chip on Wafer)'가 이 단계입니다.",
-      p: ["인터포저 웨이퍼는 아직 두꺼운 상태", "TSV는 아직 아래로 노출되지 않음"],
-      w: "인터포저가 두꺼운 상태에서 칩을 붙이므로 웨이퍼를 다루기 쉽습니다. 얇게 만드는 공정은 칩을 붙인 뒤에 합니다." },
-    { ph: "B. CoW (Chip on Wafer)", t: "언더필", mats: ["uf"],
-      d: "칩과 인터포저 사이 범프 틈을 언더필 수지로 채우고 경화합니다.",
-      p: ["범프 열응력 분산", "몰딩 전에 빈틈 제거"],
-      w: "실리콘 칩과 실리콘 인터포저 사이라 열팽창 차이는 작지만, 이후 기판에 붙었을 때의 응력에 대비해 범프를 보호합니다." },
-    { ph: "B. CoW (Chip on Wafer)", t: "CoW 후 몰딩", mats: ["mold"],
-      d: "칩이 올라간 인터포저 웨이퍼 전체를 EMC로 덮습니다(오버몰드).",
-      p: ["칩 사이 틈과 윗면을 모두 덮음", "얇게 갈 인터포저를 지지할 몸체가 됨"],
-      w: "다음 단계에서 인터포저 뒷면을 얇게 갈아야 하므로, 그 전에 칩과 몰드로 단단한 몸체를 만들어 둡니다." },
-    { ph: "B. CoW (Chip on Wafer)", t: "몰드 그라인딩 (칩 뒷면 노출)", mats: ["mold", "soc", "hbm"],
+      w: "두 공정 모두 칩 접합 방식은 비슷합니다." },
+    { ph: "C. CoW (Chip on Wafer)", t: "CoW: SoC + HBM 실장", mats: ["soc", "hbm"],
+      d: "SoC와 HBM을 뒤집어 인터포저 위 범프에 정렬하고 접합합니다. CoWoS 이름의 'CoW'가 이 단계이며, 순서상 I-Cube E의 CoP 단계와 같은 위치입니다.",
+      p: ["인터포저를 먼저 검사한 뒤 칩을 올림(칩 라스트)", "SoC와 HBM 가장자리 아래에 LSI가 위치"],
+      w: "비싼 칩을 검증된 인터포저 위에만 올려 수율 손실을 줄입니다." },
+    { ph: "C. CoW (Chip on Wafer)", t: "언더필", mats: ["uf"],
+      d: "칩과 RDL 사이 범프 틈을 언더필로 채우고 경화합니다.",
+      p: ["범프 열응력 분산", "봉지 전에 빈틈 제거"],
+      w: "실리콘 칩과 유기 RDL의 열팽창 차이로 생기는 응력을 언더필이 나눠 받습니다." },
+    { ph: "C. CoW (Chip on Wafer)", t: "봉지 (몰딩)", mats: ["mold"],
+      d: "칩이 올라간 웨이퍼 전체를 몰드로 덮어 봉지합니다.",
+      p: ["칩 사이 틈과 윗면을 모두 덮음", "캐리어를 뗀 뒤 전체를 지지할 몸체"],
+      w: "다음 단계에서 아래 캐리어를 떼기 때문에, 그 전에 칩과 몰드로 단단한 몸체를 만들어 둡니다." },
+    { ph: "C. CoW (Chip on Wafer)", t: "몰드 그라인딩 (칩 뒷면 노출)", mats: ["mold", "soc", "hbm"],
       d: "몰드 윗면을 연삭해 SoC와 HBM 뒷면을 드러내고 높이를 맞춥니다.",
-      p: ["칩 뒷면 노출로 방열 경로 확보", "다음 캐리어 본딩을 위한 평탄면 확보"],
-      w: "I-Cube E와 같은 목적입니다. 칩 뒷면이 드러나야 TIM과 리드로 열을 빼낼 수 있습니다." },
-    { ph: "C. 후면 공정", t: "웨이퍼 뒤집기 · 상면 캐리어 본딩", mats: ["carrier", "release"],
-      d: "칩·몰드 쪽 윗면에 임시 접착제로 캐리어를 붙이고 웨이퍼를 뒤집어 인터포저 뒷면을 작업할 준비를 합니다. (그림은 방향을 유지하고 캐리어만 위에 표시)",
-      p: ["I-Cube E는 처음부터 캐리어 위에서 시작하지만 CoWoS-S는 여기서 캐리어를 붙임", "본딩 균일성이 얇은 웨이퍼 휨을 좌우"],
-      w: "두꺼운 실리콘을 100 μm 안팎으로 갈아 내려면 반대편을 단단히 잡아 줄 지지판이 필요합니다." },
-    { ph: "C. 후면 공정", t: "백그라인딩 · TSV 노출", mats: ["si", "cu"],
-      d: "인터포저 뒷면 실리콘을 연삭하고 식각해 TSV 끝을 드러낸 뒤, 뒷면을 절연막으로 덮고 TSV 끝만 열어 줍니다.",
-      p: ["TSV 깊이에 맞춰 두께를 정밀하게 제어", "노출된 TSV 끝이 C4 범프 패드가 됨"],
-      w: "I-Cube E는 캐리어만 떼면 Cu 포스트가 드러나지만, CoWoS-S는 실리콘을 갈아 내야 TSV가 드러납니다. 공정이 한 단계 더 깁니다." },
-    { ph: "C. 후면 공정", t: "C4 범프 형성", mats: ["solder"],
-      d: "노출된 TSV 끝에 패드와 C4 솔더 범프를 형성합니다.",
+      p: ["칩 뒷면 노출로 방열 경로 확보", "전체 두께와 평탄도 확정"],
+      w: "칩 뒷면이 드러나야 TIM과 리드로 열을 빼낼 수 있습니다." },
+    { ph: "D. 후면 공정", t: "캐리어 디본딩", mats: ["carrier", "release"],
+      d: "박리층을 분해해 아래 캐리어를 떼어 냅니다. TIV 아랫면과 LSI의 TSV가 드러납니다.",
+      p: ["이제 칩과 몰드가 전체를 지지", "휨(warpage) 제어가 중요"],
+      w: "I-Cube E와 같은 위치의 단계입니다." },
+    { ph: "D. 후면 공정", t: "후면 RDL 형성", mats: ["pi", "cu"],
+      d: "인터포저 아랫면에 후면 RDL을 만들어 TIV와 LSI TSV를 C4 범프 위치로 재배치합니다.",
+      p: ["공개 논문의 CoWoS-L 흐름에 명시된 단계", "C4 배치를 TIV 위치와 따로 정할 수 있음"],
+      w: "후면 RDL이 있으면 LSI TSV로 전원을 넣거나 범프 배치를 바꾸기 쉬워집니다. I-Cube E에 이 단계가 있는지는 공개되지 않았습니다." },
+    { ph: "D. 후면 공정", t: "C4 범프 형성", mats: ["solder"],
+      d: "후면 RDL 패드 위에 C4 솔더 범프를 형성합니다.",
       p: ["기판 연결용 큰 범프", "범프 피치는 기판 설계 규칙에 맞춤"],
-      w: "칩 쪽 미세 피치를 기판 피치로 바꿔 주는 인터포저의 역할은 두 방식이 같습니다." },
-    { ph: "C. 후면 공정", t: "캐리어 디본딩 · 싱귤레이션", mats: ["carrier", "mold"],
-      d: "상면 캐리어를 떼어 내고 웨이퍼를 잘라 개별 CoW 모듈로 나눕니다.",
-      p: ["얇은 모듈이 휘지 않도록 테이프 프레임 위에서 처리", "모듈 단위 검사 진행"],
-      w: "여기까지가 웨이퍼 레벨 공정입니다. 이후는 개별 모듈을 기판에 올리는 조립 공정입니다." },
-    { ph: "D. oS (on Substrate)", t: "oS: 패키지 기판 실장", mats: ["sub", "uf"],
-      d: "CoW 모듈을 유기 패키지 기판에 C4 범프로 접합하고 언더필합니다. CoWoS 이름의 'oS(on Substrate)'가 이 단계입니다.",
-      p: ["기판은 전원 공급과 메인보드 연결 담당", "인터포저가 클수록 기판과의 휨 차이 관리가 어려움"],
-      w: "실리콘 인터포저와 유기 기판은 열팽창 차이가 커서, 인터포저가 클수록 C4 접합 신뢰성 관리가 중요해집니다." },
-    { ph: "D. oS (on Substrate)", t: "리드 · BGA → 완성", mats: ["lid", "solder"],
-      d: "칩 뒷면에 TIM을 바르고 리드를 덮은 뒤 BGA 솔더볼을 붙여 완성합니다. 분홍 점선은 로직–HBM 신호가 인터포저 BEOL 안에서 바로 지나는 경로, 주황 점선은 TSV를 거치는 전원 경로입니다.",
-      p: ["SoC–HBM 신호: μ범프 → 인터포저 BEOL → μ범프", "전원: BGA → 기판 → C4 → TSV → BEOL → 칩"],
-      w: "실리콘 전체를 쓰기 때문에 배선 자유도는 가장 높지만, 면적과 비용 부담도 가장 큽니다. 이 비용을 줄이려는 것이 I-Cube E와 CoWoS-L 같은 브리지 방식입니다." }
+      w: "칩 쪽 미세 피치를 기판 피치로 바꿔 주는 인터포저 역할은 같습니다." },
+    { ph: "D. 후면 공정", t: "싱귤레이션", mats: ["mold"],
+      d: "웨이퍼를 잘라 개별 CoW 모듈로 나눕니다.",
+      p: ["가장자리 여분 영역 제거", "모듈 단위 검사"],
+      w: "웨이퍼 단위로 한꺼번에 공정한 뒤 마지막에 나눕니다." },
+    { ph: "E. oS (on Substrate)", t: "oS: 패키지 기판 실장", mats: ["sub", "uf"],
+      d: "모듈을 유기 패키지 기판에 C4로 접합하고 언더필합니다. CoWoS 이름의 'oS'가 이 단계입니다.",
+      p: ["기판은 전원 공급과 메인보드 연결 담당", "대형 인터포저일수록 휨 관리가 어려움"],
+      w: "CoWoS-L은 3.3배 레티클을 넘는 대형 인터포저를 겨냥하므로 기판 실장 때 휨 관리가 특히 중요합니다." },
+    { ph: "E. oS (on Substrate)", t: "리드 · BGA → 완성", mats: ["lid", "solder"],
+      d: "칩 뒷면에 TIM을 바르고 리드를 덮은 뒤 BGA 솔더볼을 붙여 완성합니다. 분홍 점선은 로직–HBM 신호가 LSI를 지나는 경로, 주황 점선은 후면 RDL과 TIV를 거치는 전원 경로입니다.",
+      p: ["SoC–HBM 신호: μ범프 → RDL → LSI → RDL → μ범프", "전원: BGA → 기판 → C4 → 후면 RDL → TIV → 전면 RDL → 칩"],
+      w: "실리콘은 LSI와 eDTC처럼 필요한 곳에만 쓰고, 넓은 면적은 RDL로 처리합니다. I-Cube E와 같은 발상입니다." }
   ];
 
   // ================= 나란히 비교: 같은 목적 단계끼리 정렬 =================
   var ROWS = [
-    { t: "출발 기판", e: [0], s: [0], n: "I-Cube E는 나중에 떼어 낼 유리 캐리어 위에서 시작하고, CoWoS-S는 인터포저가 될 실리콘 웨이퍼 자체에서 시작합니다." },
-    { t: "수직 연결 만들기", e: [1], s: [1, 2], n: "I-Cube E는 레지스트 패턴에 구리를 도금해 기둥을 세웁니다. CoWoS-S는 실리콘을 깊게 식각해 TSV를 만들고 절연막과 구리를 채운 뒤 CMP까지 해야 합니다." },
-    { t: "고밀도 배선 영역 준비", e: [2], s: null, n: "I-Cube E는 로직–HBM 경계 아래에만 작은 실리콘 브리지를 넣습니다. CoWoS-S는 인터포저 전체가 실리콘이라 별도 브리지가 없습니다." },
-    { t: "코어 몰딩 · 평탄화", e: [3, 4], s: null, n: "I-Cube E는 몰드로 브리지와 기둥을 묶어 재구성 웨이퍼를 만들고 평탄화합니다. CoWoS-S는 앞의 CMP로 이미 평탄한 단일 웨이퍼라 이 단계가 없습니다." },
-    { t: "상부 배선층", e: [5], s: [3], n: "I-Cube E는 폴리이미드와 구리로 RDL을 만들고, 가장 촘촘한 연결은 아래 브리지가 맡습니다. CoWoS-S는 팹의 다마신 공정으로 인터포저 전체에 서브 μm 배선을 만듭니다." },
-    { t: "마이크로 범프", e: [6], s: [4], n: "두 방식 모두 칩 접합용 마이크로 범프를 만듭니다." },
-    { t: "칩 실장 (CoP / CoW)", e: [7], s: [5], n: "두 방식 모두 웨이퍼 레벨 인터포저 위에 칩을 먼저 붙입니다. I-Cube E는 캐리어 위의 얇은 RDL 인터포저에, CoWoS-S는 아직 두꺼운 실리콘 인터포저에 붙입니다." },
-    { t: "언더필", e: [8], s: [6], n: "두 방식 모두 범프 틈을 언더필로 채워 응력을 분산합니다." },
-    { t: "칩 실장 후 몰딩", e: [9], s: [7], n: "두 방식 모두 칩 위와 사이를 몰드로 덮어 다음 후면 공정을 버틸 단단한 몸체를 만듭니다." },
-    { t: "몰드 그라인딩", e: [10], s: [8], n: "두 방식 모두 몰드를 갈아 칩 뒷면을 드러냅니다. 방열 경로를 확보하고 높이를 맞추는 단계입니다." },
-    { t: "하면 연결부 노출", e: [11], s: [9, 10], n: "I-Cube E는 아래 캐리어를 떼면 바로 Cu 포스트가 드러납니다. CoWoS-S는 위에 캐리어를 붙이고 두꺼운 실리콘을 갈아 내야 TSV가 드러납니다." },
-    { t: "C4 범프", e: [12], s: [11], n: "두 방식 모두 하면에 기판 연결용 C4 범프를 만듭니다." },
-    { t: "싱귤레이션", e: [13], s: [12], n: "CoWoS-S는 상면 캐리어 디본딩을 함께 진행합니다. I-Cube E는 캐리어를 이미 뗀 상태입니다." },
-    { t: "기판 실장 (oS)", e: [14], s: [13], n: "두 방식 모두 유기 패키지 기판에 C4로 접합하고 언더필합니다." },
-    { t: "완성 · 신호 경로", e: [15], s: [14], n: "로직–HBM 신호가 I-Cube E에서는 RDL → 브리지 → RDL을 지나고, CoWoS-S에서는 인터포저 BEOL 안에서 바로 연결됩니다. 전원은 각각 Cu 포스트와 TSV를 지납니다." }
+    { t: "출발 기판", e: [0], s: [0], n: "둘 다 임시 캐리어 위에서 시작하는 칩 라스트 방식입니다." },
+    { t: "수직 연결 만들기", e: [1], s: [1], n: "I-Cube E 그림의 Cu 포스트와 CoWoS-L의 TIV는 몰드를 관통하는 구리 기둥이라는 점에서 같은 역할입니다." },
+    { t: "실리콘 브리지 배치", e: [2], s: [2], n: "둘 다 로직–HBM 경계 아래에 작은 실리콘 브리지를 넣습니다. CoWoS-L의 LSI는 TSV를 가지며, SoC 아래에 eDTC를 함께 넣을 수 있습니다. I-Cube E 브리지의 TSV 여부와 수동소자 내장 여부는 공개되지 않았습니다." },
+    { t: "코어 몰딩 · 평탄화", e: [3, 4], s: [3, 4], n: "둘 다 몰드로 브리지와 구리 기둥을 묶은 뒤 윗면을 평탄화합니다." },
+    { t: "상부 배선층 (RDL)", e: [5], s: [5], n: "둘 다 넓은 면적은 RDL로, 가장 촘촘한 칩 간 연결은 아래 브리지로 처리합니다." },
+    { t: "마이크로 범프", e: [6], s: [6], n: "두 방식 모두 칩 접합용 마이크로 범프를 만듭니다." },
+    { t: "칩 실장 (CoP / CoW)", e: [7], s: [7], n: "이름만 다르고 순서상 같은 단계입니다. 검증된 인터포저 위에 SoC와 HBM을 올립니다." },
+    { t: "언더필", e: [8], s: [8], n: "두 방식 모두 범프 틈을 언더필로 채워 응력을 분산합니다." },
+    { t: "칩 실장 후 몰딩", e: [9], s: [9], n: "두 방식 모두 캐리어를 떼기 전에 칩을 몰드로 봉지해 지지 몸체를 만듭니다." },
+    { t: "몰드 그라인딩", e: [10], s: [10], n: "두 방식 모두 몰드를 갈아 칩 뒷면을 드러내 방열 경로를 확보합니다." },
+    { t: "캐리어 디본딩", e: [11], s: [11], n: "두 방식 모두 아래 캐리어를 떼어 구리 기둥 아랫면을 드러냅니다. CoWoS-L은 LSI의 TSV도 함께 드러납니다." },
+    { t: "후면 RDL", e: null, s: [12], n: "CoWoS-L 공개 흐름에는 후면 RDL 단계가 있습니다. I-Cube E는 이 부분이 공개되지 않아 그림에서는 생략했습니다." },
+    { t: "C4 범프", e: [12], s: [13], n: "두 방식 모두 하면에 기판 연결용 C4 범프를 만듭니다." },
+    { t: "싱귤레이션", e: [13], s: [14], n: "두 방식 모두 웨이퍼를 잘라 개별 모듈로 나눕니다." },
+    { t: "기판 실장 (oS)", e: [14], s: [15], n: "두 방식 모두 유기 패키지 기판에 C4로 접합하고 언더필합니다." },
+    { t: "완성 · 신호 경로", e: [15], s: [16], n: "로직–HBM 신호는 둘 다 RDL → 실리콘 브리지 → RDL로 지납니다. 전원은 I-Cube E 그림에서는 Cu 포스트로, CoWoS-L에서는 후면 RDL과 TIV를 거쳐 들어갑니다." }
   ];
 
   // ================= SVG 장면 =================
@@ -497,23 +507,28 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     rect(w, 110, 185, 140, 40, v("--m-lid"), { rx: 6 });
     rect(w, 110, 221, 140, 10, v("--ink"), { rx: 3, "fill-opacity": .7 });
   }
-  function c4(S, i, xs) {
+  function c4(S, i, xs, bot) {
     var g = S.layer(i, null, [0, 25]);
-    xs.forEach(function (cx) { rect(g, cx - 8, 465, 16, 3, v("--m-cu")); el("circle", { cx: cx, cy: 474, r: 8, fill: v("--m-solder") }, g); });
+    xs.forEach(function (cx) { rect(g, cx - 8, bot, 16, 3, v("--m-cu")); el("circle", { cx: cx, cy: bot + 9, r: 8, fill: v("--m-solder") }, g); });
   }
-  function substrate(S, i) {
-    var g = S.layer(i, null, [0, 80]);
-    rect(g, 80, 481, 840, 60, v("--m-sub"), { rx: 2 });
-    [495, 511, 527].forEach(function (ly) { el("line", { x1: 90, y1: ly, x2: 910, y2: ly, stroke: "var(--m-sub-line)", "stroke-width": 1.5, "stroke-dasharray": "26 10", "stroke-opacity": .7 }, g); });
+  function substrate(S, i, bot) {
+    var top = bot + 16, g = S.layer(i, null, [0, 80]);
+    rect(g, 80, top, 840, 60, v("--m-sub"), { rx: 2 });
+    [14, 30, 46].forEach(function (dy) { el("line", { x1: 90, y1: top + dy, x2: 910, y2: top + dy, stroke: "var(--m-sub-line)", "stroke-width": 1.5, "stroke-dasharray": "26 10", "stroke-opacity": .7 }, g); });
     var u = S.layer(i, null, [0, 0]);
-    el("path", { d: "M128 481 L140 465 L860 465 L872 481 Z", fill: v("--m-uf"), "fill-opacity": .55 }, u);
+    el("path", { d: "M128 " + top + " L140 " + bot + " L860 " + bot + " L872 " + top + " Z", fill: v("--m-uf"), "fill-opacity": .55 }, u);
   }
-  function lidBga(S, i) {
+  function lidBga(S, i, bot) {
+    var top = bot + 16;
     var t = S.layer(i, null, [0, -40]);
     CHIP_LIST.forEach(function (c) { rect(t, c[0], 249, c[1] - c[0], 6, v("--m-tim")); });
-    el("path", { d: "M88 481 L88 225 L912 225 L912 481 L894 481 L894 249 L106 249 L106 481 Z", fill: v("--m-lid") }, S.layer(i, null, [0, -90]));
+    el("path", { d: "M88 " + top + " L88 225 L912 225 L912 " + top + " L894 " + top + " L894 249 L106 249 L106 " + top + " Z", fill: v("--m-lid") }, S.layer(i, null, [0, -90]));
     var b = S.layer(i, null, [0, 30]);
-    for (var x = 110; x <= 890; x += 40) el("circle", { cx: x, cy: 552, r: 10, fill: v("--m-solder") }, b);
+    for (var x = 110; x <= 890; x += 40) el("circle", { cx: x, cy: top + 71, r: 10, fill: v("--m-solder") }, b);
+  }
+  function laser(S, i) {
+    var lz = S.layer(i, i + 1, [0, 0], [0, 0], true);
+    for (var lx = 160; lx <= 840; lx += 60) el("line", { x1: lx, y1: 585, x2: lx, y2: 520, stroke: "var(--accent)", "stroke-width": 2, "class": "flow" }, lz);
   }
   function blades(S, i) {
     var g = S.layer(i, i + 1, [0, -40], [0, -40], true);
@@ -568,10 +583,9 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       BR.forEach(function (b) { for (var xx = b[0] + 6; xx < b[1] - 4; xx += 10) rect(g, xx + 1, 371, 3, 24, v("--m-trace")); });
     });
     ubumps(S, 6); chips(S, 7); underfill(S, 8); chipMold(S, 9, 10);
-    var lz = S.layer(11, 12, [0, 0], [0, 0], true);
-    for (var lx = 160; lx <= 840; lx += 60) el("line", { x1: lx, y1: 585, x2: lx, y2: 520, stroke: "var(--accent)", "stroke-width": 2, "class": "flow" }, lz);
-    c4(S, 12, posts.map(function (p) { return p + 5; }));
-    blades(S, 13); substrate(S, 14); lidBga(S, 15);
+    laser(S, 11);
+    c4(S, 12, posts.map(function (p) { return p + 5; }), 465);
+    blades(S, 13); substrate(S, 14, 465); lidBga(S, 15, 465);
     paths(S, 15, ["M417 352 L417 380 L413 380 L413 420 L357 420 L357 380 L353 380 L353 352", "M583 352 L583 380 L587 380 L587 425 L643 425 L643 380 L647 380 L647 352"], "M485 552 L485 372 L470 372 L470 356");
     callouts(S, [
       [500, 487, 620, 570, "Glass carrier + release"], [305, 430, 220, 300, "Cu post (TMV)"], [385, 430, 290, 300, "Si bridge (embedded)"],
@@ -582,41 +596,63 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     ]);
   }
 
-  // ---- CoWoS-S 장면 ----
+  // ---- CoWoS-L 장면 ----
   function buildS(S) {
-    var tsv = []; for (var x = 150; x <= 845; x += 30) tsv.push(x);
-    S.band(0, null, 395, 70, v("--m-si"), [0, 40]);
-    S.band(0, 10, 465, 70, v("--m-si"), [0, 40], function (g) {
-      el("line", { x1: 140, y1: 465, x2: 860, y2: 465, stroke: "var(--panel)", "stroke-opacity": .5, "stroke-dasharray": "6 6" }, g);
-    }, [0, 50]);
-    var holes = S.layer(1, null, [0, 0]);
-    tsv.forEach(function (px) { rect(holes, px, 395, 10, 76, v("--panel")); });
-    var fill = S.layer(2, null, [0, -20]);
-    tsv.forEach(function (px) { rect(fill, px, 395, 10, 76, v("--m-ox")); rect(fill, px + 1.5, 395, 7, 74.5, v("--m-cu")); });
-    S.band(3, null, 365, 30, v("--m-ox"), [0, -20], function (g) {
-      [389, 381, 373].forEach(function (ry, r) { for (var tx = 145 + r * 3; tx < 855; tx += 9) rect(g, tx, ry, 5, 2.5, v("--m-trace")); });
-      tsv.forEach(function (px) { rect(g, px + 3, 367, 4, 28, v("--m-trace")); });
+    var BR = [[335, 435], [565, 665]], DTC = [470, 530], zones = BR.concat([DTC]), tiv = [];
+    for (var x = 150; x <= 845; x += 30) if (!zones.some(function (b) { return x + 10 > b[0] - 10 && x < b[1] + 10; })) tiv.push(x);
+    rect(S.layer(0, 11, [0, 40], [0, 70]), 100, 470, 800, 34, v("--m-carrier"), { rx: 3 });
+    rect(S.layer(0, 11, [0, 40], [0, 70]), 100, 465, 800, 5, v("--m-release"));
+    S.band(3, null, 395, 70, v("--m-mold"), [0, -20]);
+    S.band(3, 4, 378, 17, v("--m-mold"), [0, -20], null, [0, -10]);
+    var gp = S.layer(1, null, [0, 30]);
+    tiv.forEach(function (px) { rect(gp, px, 395, 10, 70, v("--m-cu")); });
+    BR.forEach(function (b) {
+      var g = S.layer(2, null, [0, -90]);
+      rect(g, b[0], 407, b[1] - b[0], 58, v("--m-bridge"), { rx: 1.5 });
+      for (var k = 0; k < 4; k++) el("line", { x1: b[0] + 6, y1: 412 + k * 5, x2: b[1] - 6, y2: 412 + k * 5, stroke: "var(--m-soc-act)", "stroke-width": 1.2, "stroke-dasharray": k % 2 ? "4 3" : "none" }, g);
+      for (var t = b[0] + 12; t < b[1] - 6; t += 22) rect(g, t, 431, 4, 34, v("--m-cu"));   // LSI TSV
+      for (var xx = b[0] + 6; xx < b[1] - 4; xx += 10) rect(g, xx, 395, 5, 12, v("--m-cu"));
     });
-    ubumps(S, 4); chips(S, 5); underfill(S, 6); chipMold(S, 7, 8);
-    var car = S.layer(9, 12, [0, -70], [0, -90]);
-    rect(car, 100, 196, 800, 30, v("--m-carrier"), { rx: 3 }); rect(car, 100, 226, 800, 29, v("--m-release"), { "fill-opacity": .55 });
-    var bg = S.layer(10, 11, [0, 40], [0, 40], true), w = el("g", { "class": "grinder" }, bg);
-    rect(w, 110, 480, 140, 10, v("--ink"), { rx: 3, "fill-opacity": .7 }); rect(w, 110, 490, 140, 40, v("--m-lid"), { rx: 6 });
-    var pas = S.layer(10, null, [0, 20]); rect(pas, 140, 465, 720, 3, v("--m-ox"));
-    c4(S, 11, tsv.map(function (p) { return p + 5; }));
-    blades(S, 12); substrate(S, 13); lidBga(S, 14);
-    paths(S, 14, ["M417 352 L417 382 L353 382 L353 352", "M583 352 L583 386 L647 386 L647 352"], "M485 552 L485 372 L470 372 L470 356");
+    var gd = S.layer(2, null, [0, -90]);
+    rect(gd, DTC[0], 407, DTC[1] - DTC[0], 58, v("--m-si"), { rx: 1.5 });
+    for (var tx = DTC[0] + 6; tx < DTC[1] - 2; tx += 6) el("line", { x1: tx, y1: 410, x2: tx, y2: 440, stroke: "var(--m-hbm-base)", "stroke-width": 2 }, gd);
+    for (var px2 = DTC[0] + 8; px2 < DTC[1] - 4; px2 += 14) rect(gd, px2, 395, 5, 12, v("--m-cu"));
+    var gg = S.layer(4, 5, [0, -40], [0, -40], true), w = el("g", { "class": "grinder" }, gg);
+    rect(w, 110, 330, 140, 40, v("--m-lid"), { rx: 6 }); rect(w, 110, 366, 140, 10, v("--ink"), { rx: 3, "fill-opacity": .7 });
+    S.band(5, null, 365, 30, v("--m-pi"), [0, -20], function (g) {
+      [389, 379, 369].forEach(function (ry, r) {
+        for (var tx = 145; tx < 855; tx += 22 + r * 4) {
+          var ob = BR.some(function (b) { return tx > b[0] - 5 && tx < b[1]; });
+          rect(g, tx, ry, ob ? 6 : 14, 3, v("--m-trace"));
+          if (ob) rect(g, tx + 9, ry, 6, 3, v("--m-trace"));
+        }
+      });
+      tiv.forEach(function (px) { rect(g, px + 2, 367, 6, 28, v("--m-trace")); });
+      BR.forEach(function (b) { for (var xx = b[0] + 6; xx < b[1] - 4; xx += 10) rect(g, xx + 1, 371, 3, 24, v("--m-trace")); });
+    });
+    ubumps(S, 6); chips(S, 7); underfill(S, 8); chipMold(S, 9, 10);
+    laser(S, 11);
+    S.band(12, null, 465, 15, v("--m-pi"), [0, 20], function (g) {
+      for (var tx = 146; tx < 855; tx += 24) rect(g, tx, 472, 14, 3, v("--m-trace"));
+      tiv.forEach(function (px) { rect(g, px + 2, 465, 6, 15, v("--m-trace")); });
+      BR.forEach(function (b) { for (var t = b[0] + 12; t < b[1] - 6; t += 22) rect(g, t, 465, 4, 15, v("--m-trace")); });
+    });
+    var pads = []; for (var cx = 160; cx <= 845; cx += 30) pads.push(cx);
+    c4(S, 13, pads, 480);
+    blades(S, 14); substrate(S, 15, 480); lidBga(S, 16, 480);
+    paths(S, 16, ["M417 352 L417 380 L413 380 L413 420 L357 420 L357 380 L353 380 L353 352", "M583 352 L583 380 L587 380 L587 425 L643 425 L643 380 L647 380 L647 352"], "M455 567 L455 372 L440 372 L440 356");
     callouts(S, [
-      [500, 470, 620, 570, "Si interposer wafer"], [305, 430, 200, 300, "TSV etch (DRIE)"], [305, 430, 200, 300, "Liner + Cu fill + CMP"],
-      [470, 380, 560, 300, "BEOL Cu damascene"], [460, 358, 560, 300, "μ-bump (Cu + solder)"], [500, 300, 640, 170, "CoW: SoC + HBM"],
-      [385, 360, 290, 170, "Underfill"], [170, 240, 230, 150, "Overmold (EMC)"], [500, 255, 620, 150, "Mold grind → die backside"],
-      [500, 210, 620, 120, "Flip + top carrier bond"], [500, 466, 620, 570, "Backgrind → TSV reveal"], [305, 474, 200, 570, "C4 bump"],
-      [140, 300, 210, 150, "Debond + dicing"], [500, 511, 620, 575, "oS: substrate"], [500, 237, 620, 170, "Lid + TIM / BGA"]
+      [500, 487, 620, 570, "Glass carrier + release"], [305, 430, 200, 300, "TIV (Cu pillar)"], [500, 430, 560, 300, "LSI (TSV) + eDTC"],
+      [250, 420, 170, 300, "Molding"], [500, 395, 560, 300, "CMP → reveal"], [470, 375, 560, 300, "Front-side RDL"],
+      [460, 358, 560, 300, "μ-bump (Cu + solder)"], [500, 300, 640, 170, "CoW: SoC + HBM"], [385, 360, 290, 170, "Underfill"],
+      [170, 240, 230, 150, "Encapsulation (EMC)"], [500, 255, 620, 150, "Mold grind → die backside"], [500, 520, 620, 570, "Carrier debond"],
+      [305, 472, 200, 570, "Backside RDL"], [310, 489, 200, 575, "C4 bump"], [140, 300, 210, 150, "Dicing"],
+      [880, 530, 690, 150, "Organic substrate"], [500, 237, 620, 170, "Lid + TIM / BGA"]
     ]);
   }
 
-  var sceneE = new Scene(document.getElementById("sceneE"), 13); buildE(sceneE);
-  var sceneS = new Scene(document.getElementById("sceneS"), 12); buildS(sceneS);
+    var sceneE = new Scene(document.getElementById("sceneE"), 13); buildE(sceneE);
+  var sceneS = new Scene(document.getElementById("sceneS"), 14); buildS(sceneS);
 
   // ================= UI =================
   var player = document.getElementById("player");
@@ -650,7 +686,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     }).join("") + "</div>";
   }
   var KEYS_E = ["carrier", "release", "cu", "bridge", "mold", "pi", "solder", "soc", "hbm", "uf", "sub", "lid"];
-  var KEYS_S = ["si", "cu", "ox", "solder", "soc", "hbm", "uf", "mold", "carrier", "sub", "lid"];
+  var KEYS_S = ["carrier", "release", "cu", "bridge", "si", "mold", "pi", "solder", "soc", "hbm", "uf", "sub", "lid"];
 
   function single(s, i, alt, keys) {
     return '<div class="ph">STEP ' + pad(i + 1) + " · " + esc(s.ph) + "</div><h3>" + esc(s.t) + "</h3><p>" + esc(s.d) + "</p><ul>" +
@@ -673,7 +709,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       document.getElementById("stE").textContent = r.e ? stepLabel(STEPS_E, te) : "— 해당 없음";
       document.getElementById("stS").textContent = r.s ? stepLabel(STEPS_S, ts) : "— 해당 없음";
       detail.innerHTML = '<div class="ph">비교 ' + pad(i + 1) + " / " + ROWS.length + "</div><h3>" + esc(r.t) + '</h3><div class="duo">' +
-        side("I-Cube E", r.e, STEPS_E, "e") + side("CoWoS-S", r.s, STEPS_S, "s") + '</div><div class="why"><b>차이점</b> ' + esc(r.n) + "</div>";
+        side("I-Cube E", r.e, STEPS_E, "e") + side("CoWoS-L", r.s, STEPS_S, "s") + '</div><div class="why"><b>차이점</b> ' + esc(r.n) + "</div>";
     } else {
       var sc = mode === "e" ? sceneE : sceneS, st = mode === "e" ? STEPS_E : STEPS_S;
       if (animate) sc.animateTo(i, gap); else sc.jump(i);
@@ -703,7 +739,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     document.getElementById("stageS").hidden = m === "e";
     player.classList.toggle("compare", m === "c");
     buildList(); render(false);
-    try { history.replaceState(null, "", "#" + (m === "e" ? "icube-e" : m === "s" ? "cowos" : "compare")); } catch (e) {}
+    try { history.replaceState(null, "", "#" + (m === "e" ? "icube-e" : m === "s" ? "cowos-l" : "compare")); } catch (e) {}
     if (was && keepPlaying) play();
   }
   document.querySelectorAll(".tab").forEach(function (t) { t.addEventListener("click", function () { setMode(t.dataset.mode); }); });
@@ -718,7 +754,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     else if (e.key === "ArrowLeft") { stop(); go(pos[mode] - 1); }
     else if (e.key === " ") { e.preventDefault(); timer ? stop() : play(); }
   });
-  function fromHash() { var h = location.hash.slice(1); return h === "cowos" ? "s" : h === "compare" ? "c" : "e"; }
+  function fromHash() { var h = location.hash.slice(1); return (h === "cowos-l" || h === "cowos") ? "s" : h === "compare" ? "c" : "e"; }
   window.addEventListener("hashchange", function () { var m = fromHash(); if (m !== mode) setMode(m); });
 
   // 첫 화면: 완성 구조를 잠시 보여 준 뒤 1단계부터 재생 (모션 축소 설정이면 대기)
