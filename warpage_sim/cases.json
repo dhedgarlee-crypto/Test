@@ -1,0 +1,118 @@
+{
+  "_note": "Material values are representative literature/datasheet values (placeholders). Replace with measured DMA/TMA data for your materials. Units: E in GPa, CTE in ppm/K, density kg/m^3, stress MPa, thickness mm, size mm, pressure kPa, gaps um.",
+  "materials": {
+    "Organic core (BT/glass-epoxy)": {
+      "name": "Organic",
+      "E_glassy": 26,
+      "nu": 0.18,
+      "alpha_x_glassy": 13,
+      "rho": 1950,
+      "Tg": 260,
+      "E_rubbery": 12,
+      "alpha_x_rubbery": 40,
+      "allowable_stress": 250
+    },
+    "Glass core (CTE-tuned)": {
+      "name": "Glass",
+      "E_glassy": 74,
+      "nu": 0.22,
+      "alpha_x_glassy": 8.0,
+      "rho": 2380,
+      "allowable_stress": 50
+    },
+    "Glass core (low-CTE, Si-matched)": {
+      "name": "Glass-lowCTE",
+      "E_glassy": 74,
+      "nu": 0.22,
+      "alpha_x_glassy": 3.3,
+      "rho": 2380,
+      "allowable_stress": 50
+    },
+    "Ceramic core (96% Al2O3)": {
+      "name": "Ceramic",
+      "E_glassy": 340,
+      "nu": 0.22,
+      "alpha_x_glassy": 7.0,
+      "rho": 3750,
+      "allowable_stress": 150
+    },
+    "RDL (Cu/PI effective)": {
+      "name": "RDL",
+      "E_glassy": 30,
+      "nu": 0.32,
+      "alpha_x_glassy": 17,
+      "rho": 4500
+    },
+    "EMC": {
+      "name": "EMC",
+      "E_glassy": 24,
+      "nu": 0.3,
+      "alpha_x_glassy": 10,
+      "rho": 2000,
+      "Tg": 150,
+      "E_rubbery": 0.8,
+      "alpha_x_rubbery": 32,
+      "allowable_stress": 80
+    }
+  },
+  "cores": [
+    "Organic core (BT/glass-epoxy)",
+    "Glass core (CTE-tuned)",
+    "Ceramic core (96% Al2O3)"
+  ],
+  "core_thickness_mm": 0.8,
+  "top_stack_bottom_to_top": [
+    [
+      "RDL (Cu/PI effective)",
+      0.015
+    ],
+    [
+      "EMC",
+      0.15
+    ]
+  ],
+  "T_stress_free_C": 175,
+  "T_chuck_C": 25,
+  "panel_sizes_mm": [
+    [
+      300,
+      300
+    ],
+    [
+      510,
+      515
+    ],
+    [
+      600,
+      600
+    ]
+  ],
+  "main_panel_mm": [
+    510,
+    515
+  ],
+  "thickness_sweep_mm": [
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.5
+  ],
+  "equipment": {
+    "vacuum_available_kPa": 80,
+    "capture_gap_um": 10,
+    "seal_tolerance_um": 20,
+    "leak_beta": 30,
+    "_calibration_note": "capture_gap_um and leak_beta are equipment constants. Calibrate them with chucking pass/fail history (e.g. the 300x300 ceramic-carrier failure)."
+  },
+  "mesh": {
+    "main": 28,
+    "sweep": 20
+  },
+  "extra_cores": [
+    "Glass core (low-CTE, Si-matched)"
+  ]
+}
