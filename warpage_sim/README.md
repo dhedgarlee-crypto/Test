@@ -29,7 +29,15 @@
 python3 make_template.py                 # 빈 템플릿(대표값 포함) 재생성
 python3 run_process.py templates/ICubeE_warpage_input.xlsx           # → outputs/process/
 python3 run_process.py templates/ICubeE_warpage_input.xlsx --quick   # 빠른 확인(필요압 탐색 생략)
+python3 run_process.py templates/ICubeE_warpage_input.xlsx --sweep COP_DIE=100,200,300,400,600  # 층 두께 스윕
 ```
+
+* **필요정보_체크리스트** 시트: 신뢰도 있는 해석에 필요한 54개 항목 (영향·측정법·입력 위치). 노란 칸에 보유 여부/값 기입
+* **3D 형상**: `fig_3d_shapes.png` (Process 시트 `plot3d = Y` 단계), `warpage_3d_viewer.html`
+  (브라우저에서 열기: 공정 슬라이더, 3종 비교/단일, 높이 과장, 흡착 단계의 척 위 놓인 상태 보기, 공정별 추이 클릭 이동)
+* **CoP 변곡점 모델**: die는 솔더 응고 온도(Process 16)에서 die 사이가 빈 '섬'으로 결합(`Void` 기지, voigt) →
+  Underfill / 2nd Mold는 `ADD_FILL`로 같은 높이 구간을 병렬 충진. **Process 16의 온도 = 유효 결합 온도**로,
+  솔더 크리프 완화가 없어 217 °C 그대로면 CoP 후 warpage가 과대 → CoP 전/후 실측으로 보정 권장
 
 | 모듈 | 내용 |
 |---|---|

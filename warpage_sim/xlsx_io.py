@@ -67,12 +67,17 @@ def read_template(path):
             mx = r.get(f"matrix_{z}") or r["matrix_unit"]
             inc = [(r.get("incl1"), _num(r.get(f"incl1_{z}_pct"), 0)), (r.get("incl2"), _num(r.get(f"incl2_{z}_pct"), 0))]
             zones[z] = build(r["layer_id"], mx, inc, r.get("rule"))
-        layers[r["layer_id"]] = {"group": r.get("group") or r["layer_id"], "t": _num(r["thickness_um"]) * 1e-6,
-                                 "mat": zones, "desc": r.get("description", "")}
+        t = _num(r.get("thickness_um"))
+        host = r.get("host_layer")
+        if t is None and not host:
+            raise ValueError(f"Layers: {r['layer_id']} needs a thickness (or a host_layer for ADD_FILL)")
+        layers[r["layer_id"]] = {"group": r.get("group") or r["layer_id"], "t": None if t is None else t * 1e-6,
+                                 "mat": zones, "desc": r.get("description", ""), "host": host}
 
     steps = _rows(wb["Process"])
     for s in steps:
         s["targets"] = [t.strip() for t in str(s.get("targets") or "").split(",") if t.strip()]
+        s["plot3d"] = str(s.get("plot3d") or "").strip().upper().startswith("Y")
     equipment = {r["equipment"]: r for r in _rows(wb["Equipment"])}
     measured = _rows(wb["Measured"])
     return {"panel": panel, "materials": mats, "carriers": carriers, "layers": layers,

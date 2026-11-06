@@ -78,11 +78,21 @@ class PanelState:
     # ---------------- process operations ----------------
     @property
     def top(self):
-        return self.layers[-1].zt if self.layers else 0.0
+        return max(L.zt for L in self.layers) if self.layers else 0.0
 
     def add(self, lid, group, mat, t):
         z0 = self.top
         self.layers.append(PLayer(lid, group, mat, z0, z0 + t))
+
+    def add_parallel(self, lid, group, mat, host):
+        """Add a phase occupying the same z-range as an existing layer (e.g. mold compound
+        filling the gaps between already-bonded dies). Stiffnesses of parallel phases add
+        (Voigt), so each phase's material must already be scaled by its area fraction."""
+        i = next((k for k, L in enumerate(self.layers) if L.id == host), None)
+        if i is None:
+            raise ValueError(f"fill: host layer {host} not found")
+        H = self.layers[i]
+        self.layers.insert(i + 1, PLayer(lid, group, mat, H.zb, H.zt))
 
     def cure_shrink(self, lids):
         eig = {}
@@ -119,8 +129,8 @@ class PanelState:
 
     def grind(self, lid, t_new):
         L = self.layers[-1]
-        if L.id != lid:
-            raise ValueError(f"grind: {lid} is not the top layer (top is {L.id})")
+        if L.id != lid or any(o.zt > L.zb + 1e-12 for o in self.layers[:-1]):
+            raise ValueError(f"grind: {lid} is not the (single) top layer (top is {L.id})")
         zc = L.zb + t_new
         N, M = self._resultants(L, zc, L.zt)
         sc = L.sigma(zc)
@@ -150,7 +160,7 @@ class PanelState:
         return N, M
 
     def thickness(self):
-        return self.layers[-1].zt - self.layers[0].zb
+        return max(L.zt for L in self.layers) - min(L.zb for L in self.layers)
 
     def Dstar(self):
         A, B, D = self.abd(self.T)

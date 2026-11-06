@@ -98,9 +98,9 @@ class CompositeMaterial:
         self.inclusions = [(m, f) for m, f in inclusions if f > 0]
         self.rule = rule.lower()
         fsum = sum(f for _, f in self.inclusions)
-        if fsum >= 1.0:
-            raise ValueError(f"{name}: inclusion fractions sum to {fsum:.2f} >= 1")
-        self.phi_m = 1.0 - fsum
+        if fsum > 1.0 + 1e-9:
+            raise ValueError(f"{name}: inclusion fractions sum to {fsum:.2f} > 1")
+        self.phi_m = max(0.0, 1.0 - fsum)
         phases = [(matrix, self.phi_m)] + self.inclusions
         self.nu = sum(m.nu * f for m, f in phases)
         self.rho = sum(m.rho * f for m, f in phases)

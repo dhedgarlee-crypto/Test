@@ -61,6 +61,7 @@ def main():
         ("5. 실행:  python3 run_process.py templates/ICubeE_warpage_input.xlsx", False),
         ("", False),
         ("시트 구성", True),
+        ("필요정보_체크리스트 : ★ 신뢰도 있는 시뮬레이션에 필요한 정보 목록. 노란 셀(보유 여부·제공 정보·비고)에 알고 계신 내용을 적어 주세요", False),
         ("Panel        : 패널 크기, Unit 영역, 비교할 Carrier 옵션, 해석 설정", False),
         ("Materials    : 재료 물성 (E, ν, CTE α1/α2, Tg, 밀도, 경화수축, 허용응력)", False),
         ("Mat_T_Table  : (선택) DMA/TMA 온도별 곡선. 값이 있는 재료는 Materials의 Tg 모델 대신 이 표를 보간 사용", False),
@@ -73,6 +74,7 @@ def main():
         ("모델링 가정", True),
         ("• 각 층은 생성 온도(경화/몰드 온도)에서 무응력으로 패널 형상에 붙고, 이후 온도이력을 따라갑니다 (온도의존 탄성, 점탄성 완화는 미반영).", False),
         ("• Die/Cu post/Via/Cu 배선이 섞인 층은 면적비율로 균질화합니다: voigt = 연속 배선/평면, halpin = 기둥/블록(via, post, die).", False),
+        ("• CoP die는 솔더 응고 온도에서 '떨어진 섬(die 사이 빈 공간)'으로 결합 → 이후 Underfill/2nd Mold가 die 사이를 병렬 충진(ADD_FILL)합니다. CoP 전/후 변곡점 표현용.", False),
         ("• Unit 영역(die 배열)과 Edge 영역(패널 외곽 frame)을 별도 적층으로 계산 후 판 FE에서 결합합니다 (1/4 대칭).", False),
         ("• 흡착: 자중 → 진공 램프 → 포착 gap 이하 영역에 흡착력 → 밀폐 영역 배기 → 덮이지 않은 척 면 누설로 진공 저하.", False),
         ("• Equipment의 포착 gap/β는 설비 고유 상수 → 흡착 성공/실패 이력(Measured)으로 보정해야 판정 신뢰도가 확보됩니다.", False),
@@ -83,8 +85,35 @@ def main():
     r = len(lines) + 2
     ws.cell(r, 1, "범례").font = Font(name=F, bold=True, size=10)
     ws.cell(r + 1, 1, "파란 글씨 = 입력값 (수정 대상)").font = INPUT
+    c = ws.cell(r + 5, 1, "노란 셀 = 체크리스트에 직접 기입하는 칸"); c.fill = PatternFill("solid", fgColor="FFFF00"); c.font = INPUT
     for k, (p, fill) in enumerate(P_FILL.items()):
         c = ws.cell(r + 2 + k, 1, f"{p}  우선순위 셀 색상"); c.fill = fill; c.font = TEXT
+
+    # ------------------------------------------------------------------ 필요정보 체크리스트
+    from checklist_items import ITEMS
+    ws = wb.create_sheet("필요정보_체크리스트")
+    USER_FILL = PatternFill("solid", fgColor="FFFF00")
+    cols = [("no", "No", None), ("category", "분류", None), ("item", "필요 정보", None),
+            ("why", "왜 필요한가 (영향)", None), ("priority", "우선순위", None), ("form", "형태/단위", None),
+            ("method", "권장 측정법·조건", None), ("where", "템플릿 입력 위치", None),
+            ("have", "보유 여부\n(직접 입력)", "보유 / 일부 / 없음 / 모름"),
+            ("provided", "제공 정보·값\n(직접 입력)", "알고 계신 값, 파일명, 담당 부서 등 자유롭게"),
+            ("comment", "비고\n(직접 입력)", None)]
+    rows = [(i, c, it, why, p, form, m, where, "일부" if pre else None, pre, None)
+            for i, (c, it, why, p, form, m, where, pre) in enumerate(ITEMS, 1)]
+    table(ws, cols, rows, widths=[5, 16, 46, 40, 9, 14, 32, 24, 12, 40, 24], prio_col=4)
+    for i in range(3, 3 + len(rows)):
+        for j in range(1, 9):
+            ws.cell(i, j).font = TEXT
+        for j in (9, 10, 11):
+            ws.cell(i, j).fill = USER_FILL; ws.cell(i, j).font = INPUT
+        ws.row_dimensions[i].height = 30
+        for j in (3, 4, 7, 10):
+            ws.cell(i, j).alignment = Alignment(wrap_text=True, vertical="center")
+    dvh = DataValidation(type="list", formula1='"보유,일부,없음,모름"', allow_blank=True)
+    ws.add_data_validation(dvh); dvh.add(f"I3:I{2 + len(rows)}")
+    ws.auto_filter.ref = f"A2:K{2 + len(rows)}"
+    ws.freeze_panes = "D3"
 
     # ------------------------------------------------------------------ Panel
     ws = wb.create_sheet("Panel")
@@ -127,6 +156,8 @@ def main():
         ("EMC1", "EMC", 24, 0.8, 155, 8, 0.30, 8, None, 30, None, 2000, 0.05, 80, "★★★", PH, "DMA, TMA, 경화수축(PVT)", "1st Mold"),
         ("EMC2", "EMC", 22, 0.7, 150, 8, 0.30, 9, None, 33, None, 1950, 0.05, 80, "★★★", PH, "DMA, TMA, 경화수축(PVT)", "2nd Mold (MUF이면 die 사이도 충진)"),
         ("Underfill", "Underfill", 9, 0.3, 120, 8, 0.33, 25, None, 90, None, 1700, 0.1, None, "★★", PH, "DMA, TMA", "CoP Underfill (CUF인 경우)"),
+        ("Solder", "금속", 45, None, None, None, 0.35, 22, None, None, None, 7400, 0, None, "★", PH, "문헌 (SAC)", "μBump 솔더 (Cu pillar와 합쳐 입력해도 됨)"),
+        ("Void", "가상재료", 0.0001, None, None, None, 0.30, 0, None, None, None, 0, 0, None, "", "고정값", "-", "빈 공간 (die 사이 미충진). 수정 불필요"),
     ]
     table(ws, mcols, mats, widths=[16, 13, 10, 10, 8, 9, 6, 9, 9, 9, 9, 9, 13, 10, 9, 16, 20, 46], prio_col=14)
     dv = DataValidation(type="list", formula1='"★★★,★★,★"', allow_blank=True); ws.add_data_validation(dv); dv.add("O3:O200")
@@ -168,8 +199,11 @@ def main():
         ("URDL1_D", "URDL", "URDL 1층 유전체 + Via", 7, "LPR", None, "Cu_plated", 5, 2, None, None, None, "halpin", "★★★", ""),
         ("URDL2_L", "URDL", "URDL 2층 Cu 배선 + 패드", 5, "LPR", None, "Cu_plated", 45, 30, None, None, None, "voigt", "★★★", ""),
         ("URDL2_D", "URDL", "URDL 2층 유전체 + Via", 7, "LPR", None, "Cu_plated", 5, 2, None, None, None, "halpin", "★★★", ""),
-        ("UBUMP", "COP", "CoP 범프 갭 (Underfill + 범프), Edge는 EMC2", 30, "Underfill", "EMC2", "Cu_plated", 8, 0, None, None, None, "halpin", "★★", "CUF: die 아래 underfill, 나머지 EMC2"),
-        ("COP_DIE", "COP", "IOD/CCD Die 높이 구간 (Si + EMC2)", 400, "EMC2", None, "Si", 65, 0, None, None, None, "halpin", "★★★", "Die 두께, Unit 내 die 면적비율"),
+        ("UBUMP", "COP", "CoP μBump 구간 (CoP 시점: die 아래/사이 빈 공간)", 30, "Void", None, "Solder", 8, 0, None, None, None, "voigt", "★★", "범프 면적비율. die와 함께 솔더 응고 온도에서 결합"),
+        ("COP_DIE", "COP", "IOD/CCD Die (CoP 시점: die 사이 빈 공간)", 400, "Void", None, "Si", 65, 0, None, None, None, "voigt", "★★★", "Die 두께 ~400µm (사용자 제공, 확인 필요). Unit 내 die 면적비율"),
+        ("UF_FILL", "COP", "Underfill: die 아래 범프 구간 충진", None, "Void", None, "Underfill", 57, 0, None, None, None, "voigt", "★★", "host = UBUMP. 비율 = die 면적 − 범프 면적", "UBUMP"),
+        ("M2_UBGAP", "MOLD2", "2nd Mold: 범프 높이 구간의 die 바깥", None, "Void", None, "EMC2", 35, 100, None, None, None, "voigt", "★★★", "host = UBUMP. 비율 = 100 − die 면적 (Edge 100)", "UBUMP"),
+        ("M2_GAP", "MOLD2", "2nd Mold: die 사이 충진", None, "Void", None, "EMC2", 35, 100, None, None, None, "voigt", "★★★", "host = COP_DIE. 비율 = 100 − die 면적 (Edge 100)", "COP_DIE"),
         ("M2_TOP", "MOLD2", "Die 위 2nd Mold (over-mold)", 100, "EMC2", None, None, None, None, None, None, None, "voigt", "★★★", "Over-mold 두께"),
         ("ADH2", "CARRIER2", "2nd Carrier 접합 접착층", 20, "Adhesive2", None, None, None, None, None, None, None, "voigt", "★★★", "2nd Carrier 본체는 Panel.carrier2_option 적층 사용"),
     ]
@@ -179,47 +213,52 @@ def main():
                ("incl1", "포함재1", "Materials id"), ("incl1_unit_pct", "포함재1 비율\nUnit [%]", "면적비율 (Cu 잔존율, die 점유율 등)"),
                ("incl1_edge_pct", "포함재1 비율\nEdge [%]", None), ("incl2", "포함재2", None), ("incl2_unit_pct", "포함재2 비율\nUnit [%]", None),
                ("incl2_edge_pct", "포함재2 비율\nEdge [%]", None), ("rule", "혼합규칙", "voigt: 연속 배선/평면, halpin: 기둥/블록, reuss: 하한"),
-               ("priority", "우선순위", None), ("note", "비고", None)],
-          L, widths=[11, 11, 42, 9, 12, 12, 11, 11, 11, 11, 11, 11, 9, 9, 44], prio_col=13)
+               ("priority", "우선순위", None), ("note", "비고", None),
+               ("host_layer", "병렬 충진 대상층", "ADD_FILL 층: 이 층과 같은 높이 구간을 채움 (두께는 대상층 두께)")],
+          L, widths=[11, 11, 42, 9, 12, 12, 11, 11, 11, 11, 11, 11, 9, 9, 44, 14], prio_col=13)
     dv3 = DataValidation(type="list", formula1='"voigt,halpin,reuss"', allow_blank=True); ws.add_data_validation(dv3); dv3.add("M3:M200")
 
     # ------------------------------------------------------------------ Process
     ws = wb.create_sheet("Process")
     P = [
-        (1, "1st Carrier 준비", "START", "REL1", 25, None, None, "Carrier_Stack + 지정층을 T에서 무응력 생성"),
-        (2, "LRDL 형성 (LPR 경화)", "ADD", "LRDL_L,LRDL_D", 200, None, None, "T = LPR 경화 온도 (무응력 생성 온도)"),
-        (3, "냉각", "TEMP", None, 25, None, None, ""),
-        (4, "Bridge Die 실장 (흡착)", "CHUCK", None, 25, None, "EQ_DB", "T = 척 온도"),
-        (5, "1st Mold + PMC", "ADD", "M1_DIE,M1_TOP", 175, None, None, "Bridge die, Cu post는 몰드 시점에 패널 강성에 기여"),
-        (6, "냉각", "TEMP", None, 25, None, None, ""),
-        (7, "Grinding 전 흡착", "CHUCK", None, 25, None, "EQ_GR", ""),
-        (8, "Grinding", "GRIND", "M1_TOP", 25, 40, None, "value = grinding 후 남는 두께 [µm]"),
-        (9, "URDL 1층 (경화)", "ADD", "URDL1_L,URDL1_D", 200, None, None, ""),
-        (10, "냉각", "TEMP", None, 25, None, None, ""),
-        (11, "URDL 2층 노광 (흡착)", "CHUCK", None, 25, None, "EQ_LITHO", ""),
-        (12, "URDL 2층 (경화)", "ADD", "URDL2_L,URDL2_D", 200, None, None, ""),
-        (13, "냉각", "TEMP", None, 25, None, None, ""),
-        (14, "CoP 본딩 (흡착)", "CHUCK", None, 25, None, "EQ_COP", "본딩 스테이지 온도로 수정"),
-        (15, "CoP Reflow", "TEMP", None, 250, None, None, "Reflow 피크 온도"),
-        (16, "냉각", "TEMP", None, 25, None, None, ""),
-        (17, "Underfill 경화", "ADD", "UBUMP", 150, None, None, "MUF이면 이 단계를 2nd Mold로 통합"),
-        (18, "2nd Mold + PMC", "ADD", "COP_DIE,M2_TOP", 175, None, None, ""),
-        (19, "냉각", "TEMP", None, 25, None, None, ""),
-        (20, "2nd Carrier 접합 전 흡착", "CHUCK", None, 25, None, "EQ_BOND2", ""),
-        (21, "반전", "FLIP", None, None, None, None, "이후 보는 방향 기준 warpage 부호 반전"),
-        (22, "2nd Carrier 접합", "ADD_CARRIER2", "ADH2", 120, None, None, "접합 온도 (UV 접합이면 25)"),
-        (23, "냉각", "TEMP", None, 25, None, None, ""),
-        (24, "1st Carrier 분리", "REMOVE", "CARRIER1", 25, None, None, "그룹명/층ID. 1st Carrier 적층 전체 = CARRIER1"),
-        (25, "MIP Bump 공정 (흡착)", "CHUCK", None, 25, None, "EQ_BUMP", ""),
-        (26, "MIP Bump Reflow", "TEMP", None, 250, None, None, ""),
-        (27, "냉각 (최종)", "TEMP", None, 25, None, None, ""),
+        (1, "1st Carrier 준비", "START", "REL1", 25, None, None, "Carrier_Stack + 지정층을 T에서 무응력 생성", None),
+        (2, "LRDL 형성 (LPR 경화)", "ADD", "LRDL_L,LRDL_D", 200, None, None, "T = LPR 경화 온도 (무응력 생성 온도)", None),
+        (3, "냉각", "TEMP", None, 25, None, None, "", None),
+        (4, "Bridge Die 실장 (흡착)", "CHUCK", None, 25, None, "EQ_DB", "T = 척 온도", None),
+        (5, "1st Mold + PMC", "ADD", "M1_DIE,M1_TOP", 175, None, None, "Bridge die, Cu post는 몰드 시점에 패널 강성에 기여", None),
+        (6, "냉각", "TEMP", None, 25, None, None, "", None),
+        (7, "Grinding 전 흡착", "CHUCK", None, 25, None, "EQ_GR", "", "Y"),
+        (8, "Grinding", "GRIND", "M1_TOP", 25, 40, None, "value = grinding 후 남는 두께 [µm]", None),
+        (9, "URDL 1층 (경화)", "ADD", "URDL1_L,URDL1_D", 200, None, None, "", None),
+        (10, "냉각", "TEMP", None, 25, None, None, "", None),
+        (11, "URDL 2층 노광 (흡착)", "CHUCK", None, 25, None, "EQ_LITHO", "", None),
+        (12, "URDL 2층 (경화)", "ADD", "URDL2_L,URDL2_D", 200, None, None, "", None),
+        (13, "냉각 (CoP 전)", "TEMP", None, 25, None, None, "CoP 전 warpage 기준", "Y"),
+        (14, "CoP 본딩 (흡착)", "CHUCK", None, 25, None, "EQ_COP", "본딩 스테이지 온도로 수정", None),
+        (15, "CoP Reflow 피크", "TEMP", None, 250, None, None, "Reflow 피크 온도", None),
+        (16, "솔더 응고 (Die 결합)", "ADD", "UBUMP,COP_DIE", 217, None, None, "T = 솔더 응고 온도: die-패널 결합 무응력 온도", None),
+        (17, "냉각 (CoP 후)", "TEMP", None, 25, None, None, "CoP 후 warpage → 변곡점 확인", "Y"),
+        (18, "Underfill 경화", "ADD_FILL", "UF_FILL", 150, None, None, "MUF이면 생략하고 2nd Mold가 die 아래까지 충진", None),
+        (19, "냉각", "TEMP", None, 25, None, None, "", None),
+        (20, "2nd Mold (die 사이 충진)", "ADD_FILL", "M2_UBGAP,M2_GAP", 175, None, None, "", None),
+        (21, "2nd Mold (over-mold) + PMC", "ADD", "M2_TOP", 175, None, None, "", None),
+        (22, "냉각 (2nd Mold 후)", "TEMP", None, 25, None, None, "", "Y"),
+        (23, "2nd Carrier 접합 전 흡착", "CHUCK", None, 25, None, "EQ_BOND2", "", None),
+        (24, "반전", "FLIP", None, None, None, None, "이후 보는 방향 기준 warpage 부호 반전", None),
+        (25, "2nd Carrier 접합", "ADD_CARRIER2", "ADH2", 120, None, None, "접합 온도 (UV 접합이면 25)", None),
+        (26, "냉각", "TEMP", None, 25, None, None, "", None),
+        (27, "1st Carrier 분리", "REMOVE", "CARRIER1", 25, None, None, "그룹명/층ID. 1st Carrier 적층 전체 = CARRIER1", "Y"),
+        (28, "MIP Bump 공정 (흡착)", "CHUCK", None, 25, None, "EQ_BUMP", "", None),
+        (29, "MIP Bump Reflow", "TEMP", None, 250, None, None, "", None),
+        (30, "냉각 (최종)", "TEMP", None, 25, None, None, "", "Y"),
     ]
     table(ws, [("step", "No", None), ("name", "공정명", None),
-               ("type", "유형", "START / ADD / ADD_CARRIER2 / TEMP / GRIND / REMOVE / FLIP / CHUCK"),
+               ("type", "유형", "START / ADD / ADD_FILL(병렬 충진) / ADD_CARRIER2 / TEMP / GRIND / REMOVE / FLIP / CHUCK"),
                ("targets", "대상 층/그룹", "쉼표 구분"), ("T_C", "온도\n[°C]", "ADD: 생성(무응력) 온도, TEMP: 목표 온도, CHUCK: 척 온도"),
-               ("value", "값", "GRIND: 남는 두께 [µm]"), ("equipment", "설비 ID", "CHUCK 단계: Equipment 시트 ID"), ("note", "비고", None)],
-          P, widths=[5, 26, 15, 20, 9, 8, 12, 55])
-    dv4 = DataValidation(type="list", formula1='"START,ADD,ADD_CARRIER2,TEMP,GRIND,REMOVE,FLIP,CHUCK"', allow_blank=True)
+               ("value", "값", "GRIND: 남는 두께 [µm]"), ("equipment", "설비 ID", "CHUCK 단계: Equipment 시트 ID"), ("note", "비고", None),
+               ("plot3d", "3D 형상 출력", "Y = 3D 형상 그림(PNG)에 포함. 3D 뷰어(HTML)에는 전 단계 포함")],
+          P, widths=[5, 26, 15, 20, 9, 8, 12, 50, 10])
+    dv4 = DataValidation(type="list", formula1='"START,ADD,ADD_FILL,ADD_CARRIER2,TEMP,GRIND,REMOVE,FLIP,CHUCK"', allow_blank=True)
     ws.add_data_validation(dv4); dv4.add("C3:C300")
 
     # ------------------------------------------------------------------ Equipment
@@ -240,7 +279,7 @@ def main():
                ("T_C", "측정 온도\n[°C]", None), ("warpage_um", "Warpage\n(보는 방향 기준, +가장자리 up) [µm]", "코너 - 중앙 높이차"),
                ("shape", "형상", "bowl / dome / saddle / cylinder"), ("chuck_result", "흡착 결과", "PASS / FAIL"),
                ("note", "비고", None)],
-          [(7, "Glass", "예시-001", 25, 850, "bowl", "PASS", "예시 행 — 실제 데이터로 교체/삭제")],
+          [(17, "Glass", "예시-001", 25, 850, "bowl", "PASS", "예시 행 — 실제 데이터로 교체/삭제")],
           widths=[8, 13, 12, 10, 18, 10, 10, 40])
 
     wb.save(OUT)

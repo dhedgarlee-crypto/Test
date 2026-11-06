@@ -1,7 +1,10 @@
 """Run the I-Cube E-type process sequence for every carrier option in the Excel template.
 
 Usage:  python3 run_process.py [templates/ICubeE_warpage_input.xlsx] [--quick] [--out DIR]
-Outputs (default outputs/process/): process_results.xlsx, summary.md, results.json, figures.
+                               [--sweep LAYER=t1,t2,...]   (layer-thickness sweep in µm, e.g. COP_DIE=200,300,400,500)
+Outputs (default outputs/process/): process_results.xlsx, summary.md, results.json,
+fig_process_warpage.png, fig_chuck_gap_maps.png, fig_3d_shapes.png, warpage_3d_viewer.html,
+and with --sweep: fig_sweep_<LAYER>.png, sweep_<LAYER>.md
 """
 import os, sys, json, time
 from multiprocessing import Pool
@@ -19,12 +22,14 @@ from process import PanelState
 from plate_fe import QuarterPlate
 from materials import Material
 import ritz
+import viz3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ARGS = sys.argv[1:]
 XLSX = next((a for a in ARGS if a.endswith(".xlsx")), os.path.join(HERE, "templates", "ICubeE_warpage_input.xlsx"))
 OUT = ARGS[ARGS.index("--out") + 1] if "--out" in ARGS else os.path.join(HERE, "outputs", "process")
 QUICK = "--quick" in ARGS
+SWEEP = ARGS[ARGS.index("--sweep") + 1] if "--sweep" in ARGS else None
 ZONES = ("unit", "edge")
 COLORS = {"Organic": "#2a78d6", "Glass": "#eb6834", "Ceramic": "#1baf7a"}
 FALLBACK = ["#2a78d6", "#eb6834", "#1baf7a"]
@@ -47,13 +52,16 @@ def corner_minus_center(P, w):
     return W[-1, -1] - W[0, 0], W.max() - W.min()
 
 
-def simulate(option):
+def simulate(arg):
+    option, overrides, fast = arg if isinstance(arg, tuple) else (arg, {}, False)
     cfg = read_template(XLSX)
+    for lid, t_um in overrides.items():
+        cfg["layers"][lid]["t"] = t_um * 1e-6
     pn = cfg["panel"]
     Lx, Ly = pn["panel_x_mm"] * 1e-3, pn["panel_y_mm"] * 1e-3
     zf = zone_fn_factory(pn["unit_region_x_mm"] * 1e-3, pn["unit_region_y_mm"] * 1e-3)
     nx = 12 if QUICK else int(pn.get("mesh", 24))
-    find_preq = str(pn.get("find_required_pressure", "YES")).upper().startswith("Y") and not QUICK
+    find_preq = str(pn.get("find_required_pressure", "YES")).upper().startswith("Y") and not QUICK and not fast
     c2 = pn.get("carrier2_option", "SAME")
     c2 = option if (c2 is None or str(c2).upper() == "SAME") else c2
     T0 = float(pn.get("T_start_C", 25))
@@ -86,6 +94,14 @@ def simulate(option):
                 all_(lambda S, z: S.add(lid, L["group"], L["mat"][z], L["t"]))
         elif typ == "ADD":
             add_layers(tg, T)
+        elif typ == "ADD_FILL":
+            all_(lambda S, z: S.temp_to(T))
+            for lid in tg:
+                L = cfg["layers"][lid]
+                if not L["host"]:
+                    raise ValueError(f"ADD_FILL: layer {lid} has no host_layer")
+                all_(lambda S, z: S.add_parallel(lid, L["group"], L["mat"][z], L["host"]))
+            all_(lambda S, z: S.cure_shrink(set(tg)))
         elif typ == "ADD_CARRIER2":
             add_layers(tg, T)
             for lid, m, t in reversed(cfg["carriers"][c2]):
@@ -133,8 +149,10 @@ def simulate(option):
 
         # ---- record state ----
         Su = states["unit"]
-        P = make_plate(states, orient, Lx, Ly, zf, max(8, nx // 2))
-        cmc, pvv = corner_minus_center(P, P.free_shape())
+        P = make_plate(states, orient, Lx, Ly, zf, nx)
+        wfree = P.free_shape()
+        cmc, pvv = corner_minus_center(P, wfree)
+        fx, fy, fz = P.full_field(wfree)
         A, B, D = Su.abd(Su.T)
         NT = A @ Su.eps0 + B @ Su.kappa; MT = B @ Su.eps0 + D @ Su.kappa
         nl = ritz.free_shape(A, B, D, NT, MT, Lx, Ly, Su.kappa) if np.abs(Su.kappa).max() > 1e-6 else {"warpage": 0.0, "shape": "flat"}
@@ -146,13 +164,15 @@ def simulate(option):
                     "warp_PV_nonlinear_unit_um": float(nl["warpage"] * 1e6), "shape": nl["shape"],
                     "Dstar_unit": float(Su.Dstar()[0, 0]), "Dstar_edge": float(states["edge"].Dstar()[0, 0]),
                     "mass_kg_m2": Su.areal_mass(), "equilibrium_residual_N_m": float(res),
-                    "layers": [L.id for L in Su.layers], "chuck": chuck})
+                    "layers": [L.id for L in Su.layers], "chuck": chuck, "plot3d": bool(st.get("plot3d")),
+                    "field": {"x": (fx * 1e3).tolist(), "y": (fy * 1e3).tolist(), "z": (fz * 1e6).round(1).tolist()}})
     return {"option": option, "carrier2": c2, "steps": rec, "runtime_s": round(time.time() - t_start, 1)}
 
 
 def write_outputs(results, cfg):
     os.makedirs(OUT, exist_ok=True)
-    slim = [{**r, "steps": [{**s, "chuck": None if s["chuck"] is None else {k: v for k, v in s["chuck"].items() if k != "field"}}
+    slim = [{**r, "steps": [{**{k: v for k, v in s.items() if k != "field"},
+                             "chuck": None if s["chuck"] is None else {k: v for k, v in s["chuck"].items() if k != "field"}}
                             for s in r["steps"]]} for r in results]
     json.dump(slim, open(os.path.join(OUT, "results.json"), "w"), indent=1, ensure_ascii=False)
     col = {r["option"]: COLORS.get(r["option"], FALLBACK[i % 3]) for i, r in enumerate(results)}
@@ -208,6 +228,10 @@ def write_outputs(results, cfg):
                 ax.set_ylabel(r["option"], fontsize=10, color=col[r["option"]])
     fig.suptitle("As-placed gap to chuck before vacuum (mm) — title: verdict and residual gap after vacuum", x=0.01, ha="left", fontsize=10)
     fig.tight_layout(); fig.savefig(os.path.join(OUT, "fig_chuck_gap_maps.png")); plt.close(fig)
+
+    # ---------------- 3D shapes ----------------
+    viz3d.png_grid(results, os.path.join(OUT, "fig_3d_shapes.png"), lambda s: s["plot3d"])
+    viz3d.viewer_html(results, os.path.join(OUT, "warpage_3d_viewer.html"), os.path.basename(XLSX))
 
     # ---------------- Excel results ----------------
     wb = Workbook(); ws = wb.active; ws.title = "Chuck_Summary"
@@ -282,9 +306,51 @@ def write_outputs(results, cfg):
     print("\n".join(L))
 
 
+def run_sweep(cfg, opts):
+    lid, vals = SWEEP.split("=")
+    vals = [float(v) for v in vals.split(",")]
+    jobs = [(o, {lid: v}, True) for o in opts for v in vals]
+    with Pool(min(len(jobs), os.cpu_count() or 1)) as p:
+        res = p.map(simulate, jobs)
+    os.makedirs(OUT, exist_ok=True)
+    steps = res[0]["steps"]; xs = np.arange(len(steps))
+    fig, axs = plt.subplots(1, len(opts), figsize=(5.2 * len(opts), 4.6), dpi=150, sharey=True, squeeze=False)
+    L = [f"# Sweep: {lid} thickness\n", "| Carrier | " + lid + " (µm) | " +
+         " | ".join(f"{s['step']}. {s['name']}" for s in steps if s["plot3d"]) + " |",
+         "|---|---|" + "---|" * sum(1 for s in steps if s["plot3d"])]
+    for a, o in enumerate(opts):
+        ax = axs[0, a]; base = COLORS.get(o, FALLBACK[a % 3])
+        rs = [r for (j, r) in zip(jobs, res) if j[0] == o]
+        for k, (v, r) in enumerate(zip(vals, rs)):
+            light = 0.75 * (1 - (k + 1) / len(vals))  # sequential: light -> dark = thin -> thick
+            c = matplotlib.colors.to_rgb(base); c = tuple(ci + (1 - ci) * light for ci in c)
+            w = [s["warp_corner_minus_center_um"] / 1e3 for s in r["steps"]]
+            ax.plot(xs, w, color=c, lw=2, label=f"{v:g} µm")
+            L.append(f"| {o} | {v:g} | " + " | ".join(f"{s['warp_corner_minus_center_um']:+.0f}" for s in r["steps"] if s["plot3d"]) + " |")
+        ax.axhline(0, color="#8a8984", lw=1)
+        for i, s in enumerate(steps):
+            if s["plot3d"]:
+                ax.axvline(i, color="#d6d5d0", lw=1, ls=":")
+        ax.set_title(f"{o}", loc="left", fontsize=11, color=base)
+        ax.set_xticks([i for i, s in enumerate(steps) if s["plot3d"]])
+        ax.set_xticklabels([f"{s['step']}. {s['name']}" for s in steps if s["plot3d"]], rotation=50, ha="right", fontsize=8)
+        ax.grid(True, axis="y", color="#e4e3df"); ax.set_axisbelow(True)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+        ax.legend(title=f"{lid} 두께", frameon=False, fontsize=8, title_fontsize=8)
+    axs[0, 0].set_ylabel("Warpage corner − center (mm)\n+ edges up", color="#52514e")
+    fig.suptitle(f"{lid} 두께에 따른 공정별 warpage (점선 = 3D 출력 단계)", x=0.01, ha="left", fontsize=12)
+    fig.tight_layout(); fig.savefig(os.path.join(OUT, f"fig_sweep_{lid}.png")); plt.close(fig)
+    open(os.path.join(OUT, f"sweep_{lid}.md"), "w").write("\n".join(L) + "\n")
+    print("\n".join(L))
+
+
 if __name__ == "__main__":
     cfg = read_template(XLSX)
     opts = [o.strip() for o in str(cfg["panel"]["carrier_options"]).split(",")]
+    if SWEEP:
+        run_sweep(cfg, opts)
+        sys.exit(0)
     with Pool(min(len(opts), os.cpu_count() or 1)) as p:
         results = p.map(simulate, opts)
     write_outputs(results, cfg)
