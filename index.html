@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>말랑 친구들 퍼즐</title>
+<style>
+  :root {
+    --bg: #fff6ee;
+    --panel: #ffffff;
+    --cell: #ffeede;
+    --text: #5a4a42;
+    --accent: #ff8fab;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  h1 { font-size: 24px; margin: 4px 0 12px; }
+  .status {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    width: 100%;
+    max-width: 440px;
+  }
+  .status div {
+    flex: 1;
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .status small { display: block; font-size: 12px; opacity: 0.7; }
+  .status b { font-size: 20px; }
+  #board {
+    display: grid;
+    gap: 4px;
+    background: var(--panel);
+    padding: 8px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 440px;
+    touch-action: none;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: var(--cell);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .cell svg, .cell img { width: 88%; height: 88%; pointer-events: none; }
+  .cell.selected { background: #ffd1dc; transform: scale(1.08); }
+  .cell.pop { animation: pop 0.25s forwards; }
+  .cell.drop { animation: drop 0.25s; }
+  @keyframes pop { to { transform: scale(0); opacity: 0; } }
+  @keyframes drop { from { transform: translateY(-40%); opacity: 0.3; } }
+  button {
+    margin-top: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 28px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  #message {
+    position: fixed;
+    inset: 0;
+    background: rgba(90,74,66,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #message .box {
+    background: var(--panel);
+    border-radius: 20px;
+    padding: 24px 32px;
+    text-align: center;
+    max-width: 300px;
+  }
+  .help { font-size: 13px; opacity: 0.7; margin-top: 10px; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>🍡 말랑 친구들 퍼즐</h1>
+
+<div class="status">
+  <div><small>점수</small><b id="score">0</b></div>
+  <div><small>목표</small><b id="goal">0</b></div>
+  <div><small>남은 이동</small><b id="moves">0</b></div>
+</div>
+
+<div id="board"></div>
+
+<button onclick="startGame()">다시 시작</button>
+<p class="help">이웃한 친구 둘을 바꿔서<br>같은 친구 3마리 이상을 한 줄로 모아보세요!</p>
+
+<div id="message">
+  <div class="box">
+    <h2 id="msgTitle"></h2>
+    <p id="msgText"></p>
+    <button onclick="startGame()">한 번 더!</button>
+  </div>
+</div>
+
+<script>
+// =====================================================
+//  ✏️ 여기만 바꿔도 게임이 달라져요! (설정)
+// =====================================================
+const SIZE = 7;        // 판 크기 (7 x 7)
+const MOVES = 20;      // 이동 가능 횟수
+const GOAL = 1500;     // 목표 점수
+
+// 캐릭터 목록
+// - color: 몸 색깔, ears: 귀 모양 ("round", "long", "cat")
+// - 직접 그린 그림을 쓰고 싶다면 image: "images/파일이름.png" 를 넣어주세요.
+const CHARACTERS = [
+  { name: "하양이", color: "#ffffff", ears: "round" },
+  { name: "노랑이", color: "#ffe680", ears: "long"  },
+  { name: "파랑이", color: "#a8d8ff", ears: "cat"   },
+  { name: "분홍이", color: "#ffc4d6", ears: "round" },
+  { name: "초록이", color: "#c4f0b8", ears: "cat"   },
+  { name: "보라",   color: "#dcc8ff", ears: "long"  },
+];
+
+// =====================================================
+//  캐릭터 그리기 (그림 파일이 없으면 코드로 그려요)
+// =====================================================
+function drawCharacter(c) {
+  if (c.image) return `<img src="${c.image}" alt="${c.name}">`;
+  const line = "#5a4a42";
+  let ears = "";
+  if (c.ears === "round") {
+    ears = `<circle cx="28" cy="30" r="11" fill="${c.color}" stroke="${line}" stroke-width="3"/>
+            <circle cx="72" cy="30" r="11" fill="${c.color}" stroke="${line}" stroke-width="3"/>`;
+  } else if (c.ears === "long") {
+    ears = `<ellipse cx="36" cy="22" rx="8" ry="20" fill="${c.color}" stroke="${line}" stroke-width="3"/>
+            <ellipse cx="64" cy="22" rx="8" ry="20" fill="${c.color}" stroke="${line}" stroke-width="3"/>`;
+  } else {
+    ears = `<path d="M20 44 L26 18 L44 32 Z" fill="${c.color}" stroke="${line}" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M80 44 L74 18 L56 32 Z" fill="${c.color}" stroke="${line}" stroke-width="3" stroke-linejoin="round"/>`;
+  }
+  return `<svg viewBox="0 0 100 100">
+    ${ears}
+    <ellipse cx="50" cy="60" rx="36" ry="32" fill="${c.color}" stroke="${line}" stroke-width="3"/>
+    <circle cx="38" cy="56" r="4" fill="${line}"/>
+    <circle cx="62" cy="56" r="4" fill="${line}"/>
+    <circle cx="39.5" cy="54.5" r="1.3" fill="#fff"/>
+    <circle cx="63.5" cy="54.5" r="1.3" fill="#fff"/>
+    <ellipse cx="30" cy="66" rx="6" ry="3.5" fill="#ff9fb5" opacity="0.7"/>
+    <ellipse cx="70" cy="66" rx="6" ry="3.5" fill="#ff9fb5" opacity="0.7"/>
+    <path d="M45 66 Q50 71 55 66" fill="none" stroke="${line}" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// =====================================================
+//  게임 동작 (이 아래는 천천히 같이 공부해봐요)
+// =====================================================
+const boardEl = document.getElementById("board");
+let board = [];        // board[행][열] = 캐릭터 번호
+let selected = null;   // 처음 누른 칸
+let score = 0;
+let moves = 0;
+let busy = false;      // 애니메이션 중에는 입력을 막아요
+
+function randomKind() {
+  return Math.floor(Math.random() * CHARACTERS.length);
+}
+
+function startGame() {
+  document.getElementById("message").style.display = "none";
+  score = 0;
+  moves = MOVES;
+  selected = null;
+  busy = false;
+  // 시작부터 3개가 맞춰져 있지 않도록 판을 만들어요
+  board = [];
+  for (let r = 0; r < SIZE; r++) {
+    board.push([]);
+    for (let c = 0; c < SIZE; c++) {
+      let kind;
+      do {
+        kind = randomKind();
+      } while (
+        (c >= 2 && board[r][c-1] === kind && board[r][c-2] === kind) ||
+        (r >= 2 && board[r-1][c] === kind && board[r-2][c] === kind)
+      );
+      board[r].push(kind);
+    }
+  }
+  render();
+}
+
+function render(dropped = new Set()) {
+  boardEl.style.gridTemplateColumns = `repeat(${SIZE}, 1fr)`;
+  boardEl.innerHTML = "";
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      if (selected && selected.r === r && selected.c === c) cell.classList.add("selected");
+      if (dropped.has(r + "," + c)) cell.classList.add("drop");
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      if (board[r][c] !== null) cell.innerHTML = drawCharacter(CHARACTERS[board[r][c]]);
+      boardEl.appendChild(cell);
+    }
+  }
+  document.getElementById("score").textContent = score;
+  document.getElementById("goal").textContent = GOAL;
+  document.getElementById("moves").textContent = moves;
+}
+
+// 같은 캐릭터가 3개 이상 이어진 칸들을 찾아요
+function findMatches() {
+  const found = new Set();
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const k = board[r][c];
+      if (k === null) continue;
+      if (c <= SIZE - 3 && board[r][c+1] === k && board[r][c+2] === k) {
+        let e = c; while (e < SIZE && board[r][e] === k) found.add(r + "," + e++);
+      }
+      if (r <= SIZE - 3 && board[r+1][c] === k && board[r+2][c] === k) {
+        let e = r; while (e < SIZE && board[e][c] === k) found.add(e++ + "," + c);
+      }
+    }
+  }
+  return found;
+}
+
+function swap(a, b) {
+  const t = board[a.r][a.c];
+  board[a.r][a.c] = board[b.r][b.c];
+  board[b.r][b.c] = t;
+}
+
+const wait = ms => new Promise(res => setTimeout(res, ms));
+
+async function tryMove(a, b) {
+  busy = true;
+  swap(a, b);
+  let matches = findMatches();
+  if (matches.size === 0) {
+    // 맞춰지는 게 없으면 원래대로 돌려놔요
+    render();
+    await wait(200);
+    swap(a, b);
+    render();
+    busy = false;
+    return;
+  }
+  moves--;
+  let combo = 1;
+  while (matches.size > 0) {
+    // 1) 터지는 애니메이션
+    render();
+    for (const key of matches) {
+      const [r, c] = key.split(",").map(Number);
+      boardEl.children[r * SIZE + c].classList.add("pop");
+    }
+    await wait(250);
+    // 2) 점수 (연속으로 터지면 보너스!)
+    score += matches.size * 10 * combo;
+    for (const key of matches) {
+      const [r, c] = key.split(",").map(Number);
+      board[r][c] = null;
+    }
+    // 3) 위에 있는 친구들이 아래로 떨어지고, 빈 곳은 새 친구로 채워요
+    const dropped = new Set();
+    for (let c = 0; c < SIZE; c++) {
+      let write = SIZE - 1;
+      for (let r = SIZE - 1; r >= 0; r--) {
+        if (board[r][c] !== null) {
+          if (write !== r) dropped.add(write + "," + c);
+          board[write][c] = board[r][c];
+          write--;
+        }
+      }
+      for (let r = write; r >= 0; r--) {
+        board[r][c] = randomKind();
+        dropped.add(r + "," + c);
+      }
+    }
+    render(dropped);
+    await wait(260);
+    matches = findMatches();
+    combo++;
+  }
+  busy = false;
+  checkEnd();
+}
+
+function checkEnd() {
+  if (score >= GOAL) {
+    showMessage("🎉 성공!", `${score}점! 친구들이 기뻐해요!`);
+  } else if (moves <= 0) {
+    showMessage("😢 아쉬워요", `${score}점. 다시 도전해볼까요?`);
+  }
+}
+
+function showMessage(title, text) {
+  document.getElementById("msgTitle").textContent = title;
+  document.getElementById("msgText").textContent = text;
+  document.getElementById("message").style.display = "flex";
+}
+
+// ---- 입력: 탭 두 번 또는 손가락으로 밀기 ----
+let dragStart = null;
+
+function cellFromEvent(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const cell = el && el.closest(".cell");
+  return cell ? { r: +cell.dataset.r, c: +cell.dataset.c } : null;
+}
+
+function isNeighbor(a, b) {
+  return Math.abs(a.r - b.r) + Math.abs(a.c - b.c) === 1;
+}
+
+boardEl.addEventListener("pointerdown", e => {
+  if (busy || moves <= 0) return;
+  const p = cellFromEvent(e);
+  if (!p) return;
+  dragStart = { ...p, x: e.clientX, y: e.clientY };
+});
+
+boardEl.addEventListener("pointerup", e => {
+  if (busy || !dragStart) return;
+  const dx = e.clientX - dragStart.x;
+  const dy = e.clientY - dragStart.y;
+  const start = { r: dragStart.r, c: dragStart.c };
+  dragStart = null;
+
+  // 밀기(드래그)한 경우
+  if (Math.max(Math.abs(dx), Math.abs(dy)) > 20) {
+    const target = Math.abs(dx) > Math.abs(dy)
+      ? { r: start.r, c: start.c + Math.sign(dx) }
+      : { r: start.r + Math.sign(dy), c: start.c };
+    if (target.r >= 0 && target.r < SIZE && target.c >= 0 && target.c < SIZE) {
+      selected = null;
+      tryMove(start, target);
+    }
+    return;
+  }
+
+  // 탭한 경우
+  if (selected && isNeighbor(selected, start)) {
+    const a = selected;
+    selected = null;
+    tryMove(a, start);
+  } else if (selected && selected.r === start.r && selected.c === start.c) {
+    selected = null;
+    render();
+  } else {
+    selected = start;
+    render();
+  }
+});
+
+startGame();
+</script>
+</body>
+</html>
