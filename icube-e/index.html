@@ -17,7 +17,7 @@
   --m-mold: #3b4945; --m-pi: #ead9a4; --m-trace: #b0652c; --m-solder: #9ea7ae;
   --m-soc: #55667a; --m-soc-act: #93c3df; --m-hbm: #7a8898; --m-hbm2: #8d9aa9; --m-hbm-base: #46525f;
   --m-uf: #b3c591; --m-sub: #2e744c; --m-sub-line: #8fd0a6; --m-lid: #8f99a2; --m-tim: #d8c26e;
-  --m-si: #a9b8c8; --m-ox: #dfe6ee; --m-abf: #d3dcc0; --alt2: #3d5fc4; --alt2-soft: #e2e8f8;
+  --m-si: #a9b8c8; --m-ox: #dfe6ee; --m-abf: #d3dcc0; --alt2: #3d5fc4; --alt2-soft: #e2e8f8; --alt3: #b06a12;
   --sig: #e0457b; --pwr: #f29a1f;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -29,7 +29,7 @@
   --m-mold: #56655f; --m-pi: #7a6b3d; --m-trace: #e09a5c; --m-solder: #c3cbd1;
   --m-soc: #6a7c91; --m-soc-act: #6fa9cc; --m-hbm: #7f8d9d; --m-hbm2: #93a0ae; --m-hbm-base: #56636f;
   --m-uf: #7d8f5c; --m-sub: #3b8c5e; --m-sub-line: #a6e2bb; --m-lid: #6e7880; --m-tim: #b9a554;
-  --m-si: #74879b; --m-ox: #3c4955; --m-abf: #56654a; --alt2: #8ea6f0; --alt2-soft: #222b45;
+  --m-si: #74879b; --m-ox: #3c4955; --m-abf: #56654a; --alt2: #8ea6f0; --alt2-soft: #222b45; --alt3: #e8b25e;
   color-scheme: dark;
 } }
 :root[data-theme="dark"] {
@@ -39,7 +39,7 @@
   --m-mold: #56655f; --m-pi: #7a6b3d; --m-trace: #e09a5c; --m-solder: #c3cbd1;
   --m-soc: #6a7c91; --m-soc-act: #6fa9cc; --m-hbm: #7f8d9d; --m-hbm2: #93a0ae; --m-hbm-base: #56636f;
   --m-uf: #7d8f5c; --m-sub: #3b8c5e; --m-sub-line: #a6e2bb; --m-lid: #6e7880; --m-tim: #b9a554;
-  --m-si: #74879b; --m-ox: #3c4955; --m-abf: #56654a; --alt2: #8ea6f0; --alt2-soft: #222b45;
+  --m-si: #74879b; --m-ox: #3c4955; --m-abf: #56654a; --alt2: #8ea6f0; --alt2-soft: #222b45; --alt3: #e8b25e;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -115,6 +115,21 @@ ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .duo > div.i { border-top-color: var(--alt2); }
 .why.alt2 { border-left-color: var(--alt2); }
 .why.alt2 b { color: var(--alt2); }
+.why.alt3 { border-left-color: var(--alt3); margin-top: 10px; }
+.why.alt3 b { color: var(--alt3); }
+.tab.hyp { border-style: dashed; }
+#dCard { display: grid; gap: 16px; }
+.order { display: grid; gap: 10px; }
+.order-row { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 10px; align-items: start; }
+@media (max-width: 640px) { .order-row { grid-template-columns: minmax(0, 1fr); } }
+.order-row .who { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding-top: 3px; }
+.pills { display: flex; flex-wrap: wrap; gap: 4px; }
+.pill { font-size: 12px; padding: 3px 8px; border-radius: 4px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
+.pill.chip { background: var(--alt3); color: var(--panel); border-color: var(--alt3); font-weight: 600; }
+.pill.cur { outline: 2px solid var(--accent); outline-offset: 1px; color: var(--ink); }
+.pc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.pc h3 { margin: 0 0 6px; font-size: 15px; }
+.pc ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: 14px; }
 .duo .who { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
 .duo h4 { margin: 2px 0 6px; font-size: 16px; }
 .duo p { margin: 0 !important; font-size: 14px; }
@@ -169,6 +184,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     <button class="tab" role="tab" id="tab-e" data-mode="e" type="button">I-Cube E</button>
     <button class="tab" role="tab" id="tab-s" data-mode="s" type="button">CoWoS-L</button>
     <button class="tab" role="tab" id="tab-i" data-mode="i" type="button">EMIB-T</button>
+    <button class="tab hyp" role="tab" id="tab-d" data-mode="d" type="button">Die-last 가정 (ASIC·HBM 최종 CoP)</button>
     <button class="tab" role="tab" id="tab-c" data-mode="c" type="button">나란히 비교</button>
   </div>
 
@@ -186,6 +202,10 @@ td:first-child { color: var(--muted); white-space: nowrap; }
         <div class="stage-head"><span><span class="tag" style="background:var(--alt2)"></span><b>EMIB-T</b> · 기판 내장 TSV 브리지</span><span class="st" id="stI"></span></div>
         <svg class="scene" id="sceneI" viewBox="0 0 1000 590" role="img" aria-label="EMIB-T 단면 빌드업"></svg>
       </div>
+      <div class="stage" id="stageD">
+        <div class="stage-head"><span><span class="tag" style="background:var(--alt3)"></span><b>Die-last 가정</b> · I-Cube E 구조, 인터포저 기판 실장 후 ASIC·HBM 최종 CoP</span><span class="st" id="stD"></span></div>
+        <svg class="scene" id="sceneD" viewBox="0 0 1000 590" role="img" aria-label="Die-last 가정 공정 단면 빌드업"></svg>
+      </div>
     </div>
     <div class="controls">
       <button class="btn" id="prev" type="button" aria-label="이전 단계">◀ 이전</button>
@@ -200,6 +220,33 @@ td:first-child { color: var(--muted); white-space: nowrap; }
           <option value="2600">빠르게</option>
         </select>
       </label>
+    </div>
+  </section>
+
+  <section class="card" id="dCard" hidden aria-label="Die-last 가정 정리">
+    <div>
+      <h2>칩 실장 시점 비교</h2>
+      <div class="order" id="orderStrip"></div>
+    </div>
+    <div class="pc">
+      <div>
+        <h3>기대할 수 있는 점</h3>
+        <ul>
+          <li>비싼 ASIC·HBM을 인터포저와 기판 실장이 끝나고 전기 검사(KGI)를 통과한 구조 위에만 올리므로, 인터포저·기판 불량 때문에 좋은 칩을 버리는 손실이 줄어듭니다.</li>
+          <li>칩이 웨이퍼 몰딩, 몰드 그라인딩, 캐리어 디본딩, C4 리플로우, 기판 언더필 경화를 겪지 않아 열·기계 부담이 작습니다.</li>
+          <li>칩 위에 몰드가 없어 몰드 그라인딩이 필요 없고, 칩 뒷면이 TIM·리드와 바로 닿습니다.</li>
+          <li>ASIC과 HBM을 따로 실장하므로 칩 공급 일정에 맞추거나 불량 칩을 재작업하기가 상대적으로 쉽습니다.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>풀어야 할 과제</h3>
+        <ul>
+          <li>칩과 몰드가 없는 얇은 인터포저를 지지하려면 상면 임시 캐리어가 하나 더 필요합니다. 본딩과 디본딩이 한 번씩 늘어납니다.</li>
+          <li>기판에 먼저 붙은 인터포저는 기판 휨을 함께 겪습니다. 그 위에 미세 피치 범프를 정렬하려면 평탄도 관리와 열압착(TCB)이 필요합니다.</li>
+          <li>웨이퍼 단위가 아니라 패키지 하나씩 칩을 올리므로 처리량이 낮아질 수 있습니다.</li>
+          <li>칩 사이를 메우는 몰드가 없어 기계적 보강을 언더필, 스티프너, 리드가 맡아야 합니다.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -445,6 +492,80 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       d: "칩 뒷면에 TIM을 바르고 리드를 덮은 뒤 BGA 솔더볼을 붙여 완성합니다. 분홍 점선은 로직–HBM 신호가 브리지를 지나는 경로, 주황 점선은 기판 아래에서 브리지 TSV를 거쳐 칩으로 가는 전원 경로입니다.",
       p: ["SoC–HBM 신호: 범프 → 기판 비아 → 브리지 → 기판 비아 → 범프", "전원: BGA → 기판 PTH → 브리지 TSV → 칩"],
       w: "웨이퍼 레벨 인터포저 공정이 없어 공정 단계가 가장 짧습니다. 대신 브리지 내장과 미세 범프 정렬 정밀도를 기판 단계에서 확보해야 합니다." }
+  ];
+
+  // ================= Die-last 가정 공정 =================
+  var STEPS_D = [
+    { ph: "A. 인터포저 코어", t: "캐리어 #1 준비", mats: ["carrier", "release"],
+      d: "기존 I-Cube E 그림과 같이 유리 캐리어 위에 임시 접착·박리층을 입히고 인터포저를 쌓기 시작합니다.",
+      p: ["인터포저 코어까지는 기존 흐름과 같음", "칩은 공정 맨 끝까지 들어오지 않음"],
+      w: "이 가정 공정은 인터포저와 기판을 먼저 완성한 뒤 칩을 맨 마지막에 올리는 것이 목표입니다." },
+    { ph: "A. 인터포저 코어", t: "Cu 포스트 도금", mats: ["cu"],
+      d: "포토레지스트 패턴에 구리를 도금해 몰드 관통 수직 배선(TMV)이 될 Cu 포스트를 세웁니다.",
+      p: ["브리지 자리는 비워 둠", "전원·접지와 일반 신호 경로"], w: "기존 흐름과 같습니다." },
+    { ph: "A. 인터포저 코어", t: "실리콘 브리지 배치", mats: ["bridge"],
+      d: "로직–HBM 경계가 될 위치 아래에 실리콘 브리지를 배치합니다.",
+      p: ["칩이 아직 없으므로 칩 배치 좌표 기준으로 정렬", "브리지 윗면 Cu 필러가 RDL과 연결됨"], w: "기존 흐름과 같습니다." },
+    { ph: "A. 인터포저 코어", t: "코어 몰딩", mats: ["mold"],
+      d: "EMC로 Cu 포스트와 브리지를 덮어 재구성 웨이퍼를 만듭니다.",
+      p: ["브리지가 인터포저 안에 고정됨"], w: "기존 흐름과 같습니다." },
+    { ph: "A. 인터포저 코어", t: "코어 그라인딩", mats: ["mold", "cu", "bridge"],
+      d: "윗면을 갈아 Cu 포스트와 브리지 필러를 드러냅니다.",
+      p: ["RDL을 올릴 평탄면 확보"], w: "기존 흐름과 같습니다." },
+    { ph: "A. 인터포저 코어", t: "상부 미세 RDL · 칩 접합 패드", mats: ["pi", "cu"],
+      d: "여러 층의 RDL을 만들고, 최상층은 나중에 칩 범프를 받을 패드로 마감합니다. 범프는 칩 쪽(Cu 필러 + 솔더)에 두는 것으로 가정했습니다.",
+      p: ["인터포저 위에 μ범프를 미리 만들지 않음", "패드는 이후 여러 공정을 거쳐도 손상되지 않도록 보호막으로 덮어 둠"],
+      w: "칩 실장이 맨 마지막이라 그 사이 캐리어 본딩·디본딩, C4 리플로우를 견뎌야 하므로 패드 보호가 중요합니다.",
+      c: "기존 흐름은 여기서 바로 마이크로 범프를 만들고 칩을 올립니다." },
+    { ph: "B. 캐리어 교체", t: "상면 캐리어 #2 본딩", mats: ["carrier", "release"],
+      d: "RDL 윗면에 임시 접착제로 두 번째 캐리어를 붙입니다. 칩과 몰드가 없는 얇은 인터포저를 대신 잡아 주는 지지판입니다.",
+      p: ["인터포저가 위아래 캐리어 사이에 끼인 상태가 됨", "본딩 두께 균일성이 휨을 좌우"],
+      w: "기존 흐름에서는 칩과 오버몰드가 지지판 역할을 했습니다. 칩을 마지막으로 미루면 그 역할을 임시 캐리어가 대신해야 합니다.",
+      c: "기존 흐름에는 없는 단계입니다. 대신 칩 실장, 언더필, 오버몰드, 몰드 그라인딩이 이 시점에 빠집니다." },
+    { ph: "B. 캐리어 교체", t: "캐리어 #1 디본딩", mats: ["carrier", "release"],
+      d: "아래 캐리어 #1을 레이저나 열로 떼어 Cu 포스트 아랫면을 드러냅니다.",
+      p: ["위쪽 캐리어 #2가 전체를 지지", "디본딩 후 아랫면 세정"], w: "C4 범프를 만들 면을 여는 단계입니다.",
+      c: "기존 흐름에서는 칩과 몰드가 붙은 상태에서 디본딩하지만, 여기서는 인터포저만 캐리어 #2에 붙은 상태입니다." },
+    { ph: "B. 캐리어 교체", t: "C4 범프 형성", mats: ["solder"],
+      d: "노출된 Cu 포스트 아랫면에 패드와 C4 솔더 범프를 형성합니다.",
+      p: ["기판 연결용 큰 범프", "필요하면 하부 RDL을 추가"], w: "인터포저와 기판 사이 접합부를 칩보다 먼저 만듭니다." },
+    { ph: "B. 캐리어 교체", t: "싱귤레이션 (캐리어 #2 포함)", mats: ["mold", "carrier"],
+      d: "캐리어 #2가 붙은 채로 잘라 개별 인터포저 단위로 나눕니다. 캐리어 조각이 기판 실장 때까지 인터포저를 지지합니다.",
+      p: ["칩이 없어 다이싱 중 칩 손상 위험이 없음", "개별 인터포저 단위로 1차 검사 가능"],
+      w: "얇은 인터포저를 혼자 다루지 않도록 지지판과 함께 자르는 것으로 가정했습니다. 패널 단위로 진행하는 변형도 생각할 수 있습니다." },
+    { ph: "C. 기판 실장 먼저", t: "인터포저 → 기판 실장 + 언더필", mats: ["sub", "uf"],
+      d: "캐리어 #2가 붙은 인터포저를 유기 패키지 기판에 C4로 접합하고 언더필로 채웁니다.",
+      p: ["C4 리플로우와 언더필 경화를 칩 없이 진행", "캐리어 #2가 리플로우 중 휨을 억제"],
+      w: "열이 많이 드는 공정을 칩이 들어오기 전에 끝내는 것이 이 가정 공정의 핵심입니다.",
+      c: "기존 흐름에서는 칩이 올라간 모듈 전체를 기판에 실장합니다." },
+    { ph: "C. 기판 실장 먼저", t: "캐리어 #2 디본딩", mats: ["carrier", "release"],
+      d: "기판에 고정된 인터포저에서 위쪽 캐리어 #2를 떼어 RDL 패드면을 다시 드러냅니다.",
+      p: ["이제 기판이 인터포저를 지지", "접착제 잔여물 세정이 중요"],
+      w: "이 시점부터 인터포저 윗면은 기판 휨을 그대로 따라갑니다." },
+    { ph: "C. 기판 실장 먼저", t: "패드 표면 처리 · KGI 전기 검사", mats: ["cu"],
+      d: "패드 보호막을 걷고 표면 처리를 한 뒤, 프로브로 인터포저와 기판 연결을 검사합니다(KGI, Known Good Interposer).",
+      p: ["브리지·RDL·C4·기판 연결을 칩 없이 모두 검사", "불량이면 칩을 올리기 전에 걸러냄"],
+      w: "이 단계 때문에 칩을 맨 마지막에 올리는 의미가 생깁니다. 검증된 구조 위에만 비싼 칩을 씁니다.",
+      c: "기존 흐름에서도 칩 실장 전 인터포저 검사는 가능하지만, C4와 기판 접합까지 확인한 뒤 칩을 올리는 것은 이 흐름에서만 가능합니다." },
+    { ph: "D. 최종 CoP", t: "ASIC CoP (TCB)", mats: ["soc"],
+      d: "ASIC(SoC)을 뒤집어 Cu 필러 범프를 RDL 패드에 맞추고 열압착(TCB)으로 접합합니다.",
+      p: ["범프는 칩 쪽에 형성되어 있음", "기판 휨을 따라가는 면 위에 국부 가열·가압으로 접합"],
+      w: "인터포저가 이미 기판에 붙어 평탄도가 나빠질 수 있어 일반 리플로우보다 TCB가 유리합니다.",
+      c: "기존 흐름의 CoP와 달리 웨이퍼 단위가 아니라 패키지 하나씩 실장합니다." },
+    { ph: "D. 최종 CoP", t: "HBM CoP (TCB)", mats: ["hbm"],
+      d: "HBM 스택을 ASIC 양옆에 순서대로 TCB로 접합합니다. 각 칩 가장자리가 브리지 바로 위에 오도록 정렬합니다.",
+      p: ["브리지 위 미세 피치 범프 정렬이 가장 어려운 부분", "ASIC과 HBM을 따로 실장해 칩별 재작업 여지가 있음"],
+      w: "HBM은 높이가 높고 열에 민감해 접합 온도와 시간을 최소로 관리해야 합니다." },
+    { ph: "D. 최종 CoP", t: "CoP 언더필", mats: ["uf"],
+      d: "칩과 RDL 사이 범프 틈을 언더필로 채우고 경화합니다. 칩 사이는 몰드 없이 비어 있습니다.",
+      p: ["칩을 고정하는 유일한 수지 층", "칩 사이 몰드가 없어 기계적 보강은 리드·스티프너가 함께 맡음"],
+      w: "오버몰드와 몰드 그라인딩이 없으므로 칩 뒷면이 처음부터 드러나 있습니다.",
+      c: "기존 흐름은 이 다음에 오버몰드와 몰드 그라인딩을 하지만, 여기서는 둘 다 필요 없습니다." },
+    { ph: "D. 최종 CoP", t: "TIM · 리드 · BGA → 완성", mats: ["lid", "solder"],
+      d: "칩 뒷면에 TIM을 바르고 리드를 덮은 뒤 BGA 솔더볼을 붙여 완성합니다. 최종 구조의 신호·전원 경로는 기존 I-Cube E 그림과 같습니다.",
+      p: ["최종 단면은 칩 사이 몰드가 없다는 점만 다름", "공정 순서만 바뀌어도 수율·열 이력·장비 구성이 달라짐"],
+      w: "인텔 EMIB-T처럼 칩이 마지막에 기판 위 구조에 올라간다는 점에서 비슷한 철학입니다. 다만 브리지는 여전히 RDL 인터포저 안에 있습니다.",
+      c: "삼성이 공개한 공정이 아니라, 같은 구조를 다른 순서로 만들 때 생각할 수 있는 가정 흐름입니다." }
   ];
 
   var ROWS = [
@@ -756,9 +877,84 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     ]);
   }
 
+  // ---- Die-last 가정 장면 ----
+  function buildD(S) {
+    var BR = [[335, 435], [565, 665]], posts = [];
+    for (var x = 150; x <= 845; x += 30) if (!BR.some(function (b) { return x + 10 > b[0] - 10 && x < b[1] + 10; })) posts.push(x);
+    rect(S.layer(0, 7, [0, 40], [0, 70]), 100, 470, 800, 34, v("--m-carrier"), { rx: 3 });
+    rect(S.layer(0, 7, [0, 40], [0, 70]), 100, 465, 800, 5, v("--m-release"));
+    S.band(3, null, 395, 70, v("--m-mold"), [0, -20]);
+    S.band(3, 4, 378, 17, v("--m-mold"), [0, -20], null, [0, -10]);
+    var gp = S.layer(1, null, [0, 30]);
+    posts.forEach(function (px) { rect(gp, px, 395, 10, 70, v("--m-cu")); });
+    BR.forEach(function (b) {
+      var g = S.layer(2, null, [0, -90]);
+      rect(g, b[0], 460, b[1] - b[0], 5, v("--m-solder"));
+      rect(g, b[0], 407, b[1] - b[0], 53, v("--m-bridge"), { rx: 1.5 });
+      for (var k = 0; k < 4; k++) el("line", { x1: b[0] + 6, y1: 412 + k * 5, x2: b[1] - 6, y2: 412 + k * 5, stroke: "var(--m-soc-act)", "stroke-width": 1.2, "stroke-dasharray": k % 2 ? "4 3" : "none" }, g);
+      for (var xx = b[0] + 6; xx < b[1] - 4; xx += 10) rect(g, xx, 395, 5, 12, v("--m-cu"));
+    });
+    var gg = S.layer(4, 5, [0, -40], [0, -40], true), w = el("g", { "class": "grinder" }, gg);
+    rect(w, 110, 330, 140, 40, v("--m-lid"), { rx: 6 }); rect(w, 110, 366, 140, 10, v("--ink"), { rx: 3, "fill-opacity": .7 });
+    S.band(5, null, 365, 30, v("--m-pi"), [0, -20], function (g) {
+      [389, 379, 369].forEach(function (ry, r) {
+        for (var tx = 145; tx < 855; tx += 22 + r * 4) {
+          var ob = BR.some(function (b) { return tx > b[0] - 5 && tx < b[1]; });
+          rect(g, tx, ry, ob ? 6 : 14, 3, v("--m-trace"));
+          if (ob) rect(g, tx + 9, ry, 6, 3, v("--m-trace"));
+        }
+      });
+      posts.forEach(function (px) { rect(g, px + 2, 367, 6, 28, v("--m-trace")); });
+      BR.forEach(function (b) { for (var xx = b[0] + 6; xx < b[1] - 4; xx += 10) rect(g, xx + 1, 371, 3, 24, v("--m-trace")); });
+      CHIP_LIST.forEach(function (c) { for (var bx = c[0] + 6; bx < c[1] - 4; bx += 12) rect(g, bx, 362, 6, 3, v("--m-cu")); });
+    });
+    // 캐리어 #2 (위)
+    S.band(6, 11, 335, 25, v("--m-carrier"), [0, -60], null, [0, -90]);
+    S.band(6, 11, 360, 5, v("--m-release"), [0, -60], null, [0, -90]);
+    laser(S, 7);
+    c4(S, 8, posts.map(function (p) { return p + 5; }), 465);
+    var bl = S.layer(9, 10, [0, -40], [0, -40], true);
+    [140, 860].forEach(function (bx) { var b = el("g", { "class": "blade" }, bl); rect(b, bx - 2.5, 300, 5, 190, v("--accent"), { "fill-opacity": .8 }); });
+    substrate(S, 10, 465);
+    var lz = S.layer(11, 12, [0, 0], [0, 0], true);
+    for (var lx = 160; lx <= 840; lx += 60) el("line", { x1: lx, y1: 250, x2: lx, y2: 315, stroke: "var(--accent)", "stroke-width": 2, "class": "flow" }, lz);
+    // 패드 표면 처리 + 프로브 검사
+    var fin = S.layer(12, null, [0, 0]);
+    CHIP_LIST.forEach(function (c) { for (var bx = c[0] + 6; bx < c[1] - 4; bx += 12) rect(fin, bx, 361, 6, 2, v("--m-tim")); });
+    var pr = S.layer(12, 13, [0, -60], [0, -60], true);
+    [[250, 360], [330, 362], [480, 362], [520, 362], [700, 362]].forEach(function (q) {
+      el("path", { d: "M" + (q[0] - 40) + " 230 L" + q[0] + " " + (q[1] - 2), stroke: "var(--ink)", "stroke-width": 2.5, fill: "none" }, pr);
+    });
+    rect(pr, 180, 210, 560, 22, v("--m-lid"), { rx: 4 });
+    // 칩: ASIC 먼저, HBM 나중 (범프는 칩 쪽)
+    function chipBumps(g, c) { for (var bx = c[0] + 6; bx < c[1] - 4; bx += 12) { rect(g, bx, 355, 6, 3.5, v("--m-cu")); rect(g, bx, 358.5, 6, 2.5, v("--m-solder"), { rx: 1 }); } }
+    var gs = S.layer(13, null, [0, -110]);
+    rect(gs, CH.soc[0], 255, CH.soc[1] - CH.soc[0], 100, v("--m-soc"));
+    rect(gs, CH.soc[0], 345, CH.soc[1] - CH.soc[0], 10, v("--m-soc-act"));
+    chipBumps(gs, CH.soc);
+    [CH.hbmL, CH.hbmR].forEach(function (c) {
+      var g = S.layer(14, null, [0, -110]);
+      rect(g, c[0], 335, c[1] - c[0], 20, v("--m-hbm-base"));
+      for (var k = 0; k < 8; k++) rect(g, c[0], 255 + k * 10, c[1] - c[0], 9.2, k % 2 ? v("--m-hbm2") : v("--m-hbm"));
+      for (var t = c[0] + 22; t < c[1] - 10; t += 34) el("line", { x1: t, y1: 257, x2: t, y2: 353, stroke: "var(--m-cu)", "stroke-width": 1.4 }, g);
+      chipBumps(g, c);
+    });
+    underfill(S, 15); lidBga(S, 16, 465);
+    paths(S, 16, ["M417 352 L417 380 L413 380 L413 420 L357 420 L357 380 L353 380 L353 352", "M583 352 L583 380 L587 380 L587 425 L643 425 L643 380 L647 380 L647 352"], "M485 552 L485 372 L470 372 L470 356");
+    callouts(S, [
+      [500, 487, 620, 570, "Carrier #1 + release"], [305, 430, 220, 300, "Cu post (TMV)"], [385, 430, 290, 300, "Si bridge (embedded)"],
+      [250, 420, 170, 300, "Core molding (EMC)"], [500, 395, 560, 300, "Grind → reveal Cu"], [470, 375, 560, 300, "RDL + die pads"],
+      [500, 345, 620, 250, "Carrier #2 bond (top)"], [500, 520, 620, 570, "Debond carrier #1"], [305, 474, 200, 570, "C4 bump"],
+      [140, 350, 210, 250, "Dicing (with carrier #2)"], [500, 511, 620, 575, "Interposer → substrate"], [500, 345, 620, 250, "Debond carrier #2"],
+      [700, 362, 750, 300, "Pad finish + KGI test"], [500, 300, 640, 170, "ASIC CoP (TCB)"], [285, 300, 120, 170, "HBM CoP (TCB)"],
+      [385, 360, 290, 170, "CoP underfill"], [500, 237, 620, 170, "Lid + TIM / BGA"]
+    ]);
+  }
+
   var sceneE = new Scene(document.getElementById("sceneE"), 13); buildE(sceneE);
   var sceneS = new Scene(document.getElementById("sceneS"), 14); buildS(sceneS);
   var sceneI = new Scene(document.getElementById("sceneI"), 99); buildI(sceneI);
+  var sceneD = new Scene(document.getElementById("sceneD"), 9); buildD(sceneD);
 
   // ================= UI =================
   var SYS = {
@@ -767,7 +963,9 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     s: { name: "CoWoS-L", scene: sceneS, steps: STEPS_S, st: "stS", stage: "stageS", why: " alt", hash: "cowos-l",
          keys: ["carrier", "release", "cu", "bridge", "si", "mold", "pi", "solder", "soc", "hbm", "uf", "sub", "lid"] },
     i: { name: "EMIB-T", scene: sceneI, steps: STEPS_I, st: "stI", stage: "stageI", why: " alt2", hash: "emib-t",
-         keys: ["sub", "abf", "cu", "bridge", "solder", "soc", "hbm", "uf", "lid"] }
+         keys: ["sub", "abf", "cu", "bridge", "solder", "soc", "hbm", "uf", "lid"] },
+    d: { name: "Die-last 가정", scene: sceneD, steps: STEPS_D, st: "stD", stage: "stageD", why: "", hash: "die-last",
+         keys: ["carrier", "release", "cu", "bridge", "mold", "pi", "solder", "soc", "hbm", "uf", "sub", "lid"] }
   };
   var ORDER = ["e", "s", "i"];
   var player = document.getElementById("player");
@@ -776,7 +974,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
   var scrub = document.getElementById("scrub");
   var playBtn = document.getElementById("play");
   var speedSel = document.getElementById("speed");
-  var mode = "e", pos = { e: 0, s: 0, i: 0, c: 0 }, timer = null, btns = [];
+  var mode = "e", pos = { e: 0, s: 0, i: 0, d: 0, c: 0 }, timer = null, btns = [];
 
   function pad(n) { return String(n).padStart(2, "0"); }
   function items() { return mode === "c" ? ROWS : SYS[mode].steps; }
@@ -791,8 +989,9 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       if (mode !== "c" && s.ph !== last) { var h = document.createElement("li"); h.className = "phase"; h.textContent = s.ph; list.appendChild(h); last = s.ph; }
       var li = document.createElement("li"), b = document.createElement("button");
       b.type = "button"; b.className = "step-btn";
-      b.innerHTML = '<span class="n">' + pad(i + 1) + "</span><span>" + esc(s.t) + (s.isNew ? '<span class="new">추가</span>' : "") + "</span>";
+      b.innerHTML = '<span class="n">' + pad(i + 1) + "</span><span>" + esc(s.t) + (s.isNew ? '<span class="new">추가</span>' : s.c ? '<span class="new">기존과 다름</span>' : "") + "</span>";
       b.addEventListener("click", function () { stop(); go(i); });
+      if (s.c) b.title = "기존 흐름과 다른 단계";
       li.appendChild(b); list.appendChild(li); btns.push(b);
     });
   }
@@ -804,7 +1003,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
   function single(sys, i) {
     var s = sys.steps[i];
     return '<div class="ph">STEP ' + pad(i + 1) + " · " + esc(s.ph) + "</div><h3>" + esc(s.t) + "</h3><p>" + esc(s.d) + "</p><ul>" +
-      s.p.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + '</ul><div class="why' + sys.why + '"><b>왜 이렇게 하나요?</b> ' + esc(s.w) + "</div>" + legendHtml(s.mats, sys.keys);
+      s.p.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + '</ul><div class="why' + sys.why + '"><b>왜 이렇게 하나요?</b> ' + esc(s.w) + "</div>" + (s.c ? '<div class="why alt3"><b>기존 I-Cube E 흐름과 비교</b> ' + esc(s.c) + "</div>" : "") + legendHtml(s.mats, sys.keys);
   }
   function side(k, idxs) {
     var sys = SYS[k];
@@ -835,9 +1034,20 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       document.getElementById(sys.st).textContent = stepLabel(sys, i);
       detail.innerHTML = single(sys, i);
     }
+    if (mode === "d") renderOrder(i);
     btns.forEach(function (b, k) { b.classList.toggle("cur", k === i); b.classList.toggle("done", k < i); b.setAttribute("aria-current", k === i ? "step" : "false"); });
     scrub.max = len() - 1; scrub.value = i;
     document.getElementById("counter").textContent = pad(i + 1) + " / " + len();
+  }
+  function renderOrder(cur) {
+    function row(label, steps, curIdx) {
+      return '<div class="order-row"><div class="who">' + label + '</div><div class="pills">' + steps.map(function (st, k) {
+        var chip = st.mats.indexOf("soc") >= 0 || st.mats.indexOf("hbm") >= 0;
+        if (st.mats.indexOf("mold") >= 0 && st.mats.indexOf("soc") >= 0) chip = false;
+        return '<span class="pill' + (chip ? " chip" : "") + (k === curIdx ? " cur" : "") + '">' + pad(k + 1) + " " + esc(st.t) + "</span>";
+      }).join("") + "</div></div>";
+    }
+    document.getElementById("orderStrip").innerHTML = row("기존 I-Cube E (그림 기준)", STEPS_E, -1) + row("Die-last 가정", STEPS_D, cur);
   }
   function go(i) { pos[mode] = Math.max(0, Math.min(len() - 1, i)); render(true); }
   function stop() { clearInterval(timer); timer = null; playBtn.textContent = "▶ 재생"; }
@@ -850,7 +1060,8 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     stop();
     mode = m;
     document.querySelectorAll(".tab").forEach(function (t) { t.setAttribute("aria-selected", t.dataset.mode === m ? "true" : "false"); });
-    ORDER.forEach(function (k) { document.getElementById(SYS[k].stage).hidden = !(m === "c" || m === k); });
+    ["e", "s", "i", "d"].forEach(function (k) { document.getElementById(SYS[k].stage).hidden = !(m === "c" ? ORDER.indexOf(k) >= 0 : m === k); });
+    document.getElementById("dCard").hidden = m !== "d";
     player.classList.toggle("compare", m === "c");
     buildList(); render(false);
     try { history.replaceState(null, "", "#" + (m === "c" ? "compare" : SYS[m].hash)); } catch (e) {}
@@ -872,14 +1083,15 @@ td:first-child { color: var(--muted); white-space: nowrap; }
     if (h === "compare") return "c";
     if (h === "cowos-l" || h === "cowos") return "s";
     if (h === "emib-t" || h === "emib") return "i";
+    if (h === "die-last") return "d";
     return "e";
   }
   window.addEventListener("hashchange", function () { var m = fromHash(); if (m !== mode) setMode(m); });
 
   // 첫 화면: 완성 구조를 잠시 보여 준 뒤 1단계부터 재생 (모션 축소 설정이거나 사용자가 먼저 조작하면 대기)
-  pos.e = STEPS_E.length - 1; pos.s = STEPS_S.length - 1; pos.i = STEPS_I.length - 1; pos.c = ROWS.length - 1;
+  pos.e = STEPS_E.length - 1; pos.s = STEPS_S.length - 1; pos.i = STEPS_I.length - 1; pos.d = STEPS_D.length - 1; pos.c = ROWS.length - 1;
   setMode(fromHash());
-  pos.e = 0; pos.s = 0; pos.i = 0; pos.c = 0;
+  pos.e = 0; pos.s = 0; pos.i = 0; pos.d = 0; pos.c = 0;
   var touched = false;
   ["pointerdown", "keydown"].forEach(function (ev) { document.addEventListener(ev, function () { touched = true; }, true); });
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
