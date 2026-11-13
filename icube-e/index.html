@@ -130,6 +130,31 @@ ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .pc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
 .pc h3 { margin: 0 0 6px; font-size: 15px; }
 .pc ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: 14px; }
+.uop { margin: 4px 0 12px; overflow-x: auto; }
+.uop table { min-width: 680px; font-size: 13px; }
+.uop td { line-height: 1.5; }
+.uop td:first-child { white-space: nowrap; }
+.uop td:nth-child(2) { font-weight: 600; color: var(--ink); min-width: 9em; }
+.uop .cons { color: var(--ink); }
+.uop .na { color: var(--muted); }
+.uop-h { font-family: var(--font-mono); font-size: 12px; letter-spacing: .05em; color: var(--muted); margin: 14px 0 2px; text-transform: uppercase; }
+.tg { display: inline-block; font-family: var(--font-mono); font-size: 11px; line-height: 1.4; padding: 1px 6px; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
+.tg.wet { color: var(--accent); } .tg.dry { color: var(--alt); } .tg.litho { color: var(--alt2); }
+.tg.plate { color: var(--m-cu); } .tg.therm { color: var(--pwr); } .tg.bond { color: var(--alt3); }
+.tg.mech { color: var(--muted); } .tg.insp { color: var(--m-sub); } .tg.rep { color: var(--muted); border-style: dashed; }
+.flow-all { display: grid; gap: 6px; }
+.flow-all details { border: 1px solid var(--line); border-radius: 8px; background: var(--bg); min-width: 0; }
+.flow-all summary { cursor: pointer; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 14px; }
+.flow-all summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.flow-all summary .n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.flow-all summary b { font-weight: 600; }
+.flow-all summary .cnt { display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto; }
+.flow-all details.cur { border-color: var(--accent); }
+.flow-all .uop { margin: 0; padding: 0 12px 12px; }
+.glob { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px 20px; }
+.glob div { min-width: 0; }
+.glob h4 { margin: 0 0 4px; font-size: 14px; }
+.glob p { margin: 0; font-size: 14px; color: var(--muted); }
 .duo .who { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
 .duo h4 { margin: 2px 0 6px; font-size: 16px; }
 .duo p { margin: 0 !important; font-size: 14px; }
@@ -247,6 +272,21 @@ td:first-child { color: var(--muted); white-space: nowrap; }
           <li>칩 사이를 메우는 몰드가 없어 기계적 보강을 언더필, 스티프너, 리드가 맡아야 합니다.</li>
         </ul>
       </div>
+    </div>
+    <div>
+      <h2>공정 전반의 제약</h2>
+      <div class="glob">
+        <div><h4>열 예산</h4><p>가장 뜨거운 공정은 C4 범프 리플로우와 기판 실장 리플로우(피크 약 240–260°C)입니다. 두 번 모두 캐리어 #2가 붙어 있으므로 그 접착제가 이 온도를 견뎌야 합니다. PI 경화 온도도 캐리어 #1 접착층과 EMC가 견디는 범위 안에서 골라야 합니다.</p></div>
+        <div><h4>약품 호환성</h4><p>캐리어 #1과 #2의 임시 접착 시스템은 서로 다른 방법으로 제거돼야 합니다. 한쪽 잔사 제거 솔벤트가 다른 쪽 접착층을 녹이면 안 됩니다. HF 계열 식각액은 유리 캐리어를 침식하므로 Ti 시드 식각은 H₂O₂ 계열을 씁니다.</p></div>
+        <div><h4>습식 공정 위치</h4><p>ENEPIG처럼 뜨거운 습식 욕조가 필요한 공정은 기판에 붙이기 전, 웨이퍼 단계에서 끝냅니다. 기판 실장 뒤의 습식 공정은 플럭스 세정과 잔사 제거처럼 기판 솔더레지스트·언더필과 호환되는 약품으로 제한합니다.</p></div>
+        <div><h4>흡습 · 탈가스</h4><p>EMC, PI, 유기 기판은 수분을 흡수합니다. 리플로우나 경화 전에 베이크하지 않으면 들뜸, 보이드, 팝콘 크랙이 생깁니다. 스퍼터 전에는 PI 탈가스가 필요합니다.</p></div>
+        <div><h4>휨</h4><p>EMC 후경화, PI 경화가 쌓이면서 휨이 커집니다. 기판에 붙은 뒤에는 기판 휨까지 더해져, 마지막 TCB 단계의 미세 피치 정렬이 가장 어려운 지점이 됩니다.</p></div>
+        <div><h4>처리 단위 전환</h4><p>01–10단계는 웨이퍼(또는 패널) 단위, 11단계부터는 패키지 하나씩 처리합니다. 유닛 단위 레이저 디본딩, 세정, 검사, TCB는 처리량을 떨어뜨리는 주된 요인입니다.</p></div>
+      </div>
+    </div>
+    <div>
+      <h2>전체 단위 공정 플로우</h2>
+      <div class="flow-all" id="flowAll"></div>
     </div>
   </section>
 
@@ -513,8 +553,8 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       d: "윗면을 갈아 Cu 포스트와 브리지 필러를 드러냅니다.",
       p: ["RDL을 올릴 평탄면 확보"], w: "기존 흐름과 같습니다." },
     { ph: "A. 인터포저 코어", t: "상부 미세 RDL · 칩 접합 패드", mats: ["pi", "cu"],
-      d: "여러 층의 RDL을 만들고, 최상층은 나중에 칩 범프를 받을 패드로 마감합니다. 범프는 칩 쪽(Cu 필러 + 솔더)에 두는 것으로 가정했습니다.",
-      p: ["인터포저 위에 μ범프를 미리 만들지 않음", "패드는 이후 여러 공정을 거쳐도 손상되지 않도록 보호막으로 덮어 둠"],
+      d: "여러 층의 RDL을 만들고, 최상층은 나중에 칩 범프를 받을 패드로 마감합니다. 패드 표면 처리(ENEPIG)도 이 웨이퍼 단계에서 미리 하고 임시 보호막으로 덮어 둡니다. 범프는 칩 쪽(Cu 필러 + 솔더)에 두는 것으로 가정했습니다.",
+      p: ["인터포저 위에 μ범프를 미리 만들지 않음", "ENEPIG 같은 습식 표면 처리는 기판에 붙이기 전에 해야 기판 솔더레지스트가 약품에 노출되지 않음"],
       w: "칩 실장이 맨 마지막이라 그 사이 캐리어 본딩·디본딩, C4 리플로우를 견뎌야 하므로 패드 보호가 중요합니다.",
       c: "기존 흐름은 여기서 바로 마이크로 범프를 만들고 칩을 올립니다." },
     { ph: "B. 캐리어 교체", t: "상면 캐리어 #2 본딩", mats: ["carrier", "release"],
@@ -542,8 +582,8 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       d: "기판에 고정된 인터포저에서 위쪽 캐리어 #2를 떼어 RDL 패드면을 다시 드러냅니다.",
       p: ["이제 기판이 인터포저를 지지", "접착제 잔여물 세정이 중요"],
       w: "이 시점부터 인터포저 윗면은 기판 휨을 그대로 따라갑니다." },
-    { ph: "C. 기판 실장 먼저", t: "패드 표면 처리 · KGI 전기 검사", mats: ["cu"],
-      d: "패드 보호막을 걷고 표면 처리를 한 뒤, 프로브로 인터포저와 기판 연결을 검사합니다(KGI, Known Good Interposer).",
+    { ph: "C. 기판 실장 먼저", t: "보호막 제거 · KGI 전기 검사", mats: ["cu"],
+      d: "웨이퍼 단계에서 덮어 둔 보호막을 걷고 플라즈마로 패드를 세정한 뒤, 프로브로 인터포저와 기판 연결을 검사합니다(KGI, Known Good Interposer).",
       p: ["브리지·RDL·C4·기판 연결을 칩 없이 모두 검사", "불량이면 칩을 올리기 전에 걸러냄"],
       w: "이 단계 때문에 칩을 맨 마지막에 올리는 의미가 생깁니다. 검증된 구조 위에만 비싼 칩을 씁니다.",
       c: "기존 흐름에서도 칩 실장 전 인터포저 검사는 가능하지만, C4와 기판 접합까지 확인한 뒤 칩을 올리는 것은 이 흐름에서만 가능합니다." },
@@ -566,6 +606,81 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       p: ["최종 단면은 칩 사이 몰드가 없다는 점만 다름", "공정 순서만 바뀌어도 수율·열 이력·장비 구성이 달라짐"],
       w: "인텔 EMIB-T처럼 칩이 마지막에 기판 위 구조에 올라간다는 점에서 비슷한 철학입니다. 다만 브리지는 여전히 RDL 인터포저 안에 있습니다.",
       c: "삼성이 공개한 공정이 아니라, 같은 구조를 다른 순서로 만들 때 생각할 수 있는 가정 흐름입니다." }
+  ];
+
+  // ================= Die-last 단위 공정 (일반적인 조건·제약, 가정) =================
+  var TG = { wet: "습식", dry: "건식·플라즈마", litho: "노광", plate: "도금", therm: "열처리", bond: "접합", mech: "기계", insp: "검사", rep: "반복" };
+  var FLOW_D = [
+    [["wet", "유리 캐리어 세정", "알칼리 세정 → DI 린스 → 스핀 건조", "파티클이 남으면 본딩 보이드와 국부 휨의 원인"],
+     ["dry", "박리층 코팅", "레이저 흡수형 박리층 스핀 코팅 → 베이크", "디본딩 레이저 파장에 맞는 재료여야 함"],
+     ["therm", "임시 접착층 코팅 · 경화", "약 150–250°C, N₂", "이 층이 견디는 온도가 이후 모든 공정의 상한이 됨"]],
+    [["dry", "시드층 스퍼터", "Ti/Cu 약 0.1/0.3 μm", "탈가스 온도가 접착층 한계를 넘지 않게"],
+     ["litho", "후막 PR · 드라이필름 라미네이트", "포스트 높이 이상 두께(수십~100 μm 이상)", "두꺼울수록 노광 해상도와 측벽 각도가 나빠짐"],
+     ["litho", "노광 · 현상", "드라이필름: 약알칼리(Na₂CO₃) / 액상 PR: TMAH 현상", "현상 잔사는 도금 불량으로 이어짐"],
+     ["dry", "플라즈마 descum", "O₂ 플라즈마", "과하면 PR 개구가 넓어짐"],
+     ["plate", "Cu 전해 도금", "황산동 도금액, 상온 부근, 첨가제 관리", "웨이퍼 내 두께 편차가 이후 그라인딩량을 좌우"],
+     ["wet", "PR 박리", "드라이필름: 알칼리 박리액 / 액상 PR: 솔벤트 스트리퍼", "박리액이 박리층·접착층 가장자리를 공격하지 않아야 함"],
+     ["wet", "시드층 식각", "Cu: H₂O₂/H₂SO₄ 계열 → Ti: H₂O₂ 계열", "HF 계열 Ti 식각액은 유리 캐리어를 침식하므로 피함. Cu 포스트 표면도 함께 깎임"],
+     ["insp", "포스트 높이 · CD 측정", "3D 광학 측정", "높이 편차 관리"]],
+    [["wet", "브리지 다이 준비", "브리지 웨이퍼에 Cu 필러 → 박화 → DAF 라미네이트 → 다이싱(DI수) → 세정", "다이싱 칩핑·파티클이 매립 후 크랙의 출발점"],
+     ["bond", "픽앤플레이스", "캐리어 얼라인 마크 기준, 수 μm 정밀도", "배치 오차가 미세 RDL 비아 정렬 여유를 잠식"],
+     ["therm", "DAF 경화", "약 150–175°C", "몰딩 중 다이 이동(die shift) 방지"]],
+    [["dry", "플라즈마 표면 처리", "Ar/O₂", "몰드 밀착력 확보"],
+     ["therm", "압축 몰딩 (EMC)", "약 125–175°C, 과립 또는 액상 EMC", "필러 입자가 브리지와 포스트 사이 간격보다 작아야 함. 다이 이동 주의"],
+     ["therm", "후경화 (PMC)", "약 150–175°C, 수 시간", "경화 수축이 웨이퍼 휨의 주요 원인"]],
+    [["mech", "몰드 연삭", "다이아몬드 휠, DI수 냉각", "Cu 번짐(smear)으로 포스트 사이 단락 위험"],
+     ["mech", "CMP 또는 미세 연마", "슬러리 연마", "평탄도가 미세 RDL 선폭 한계를 결정"],
+     ["wet", "후세정", "브러시 + DI수, 묽은 산으로 Cu 산화막 제거", "슬러리·필러 잔류물은 비아 접촉 불량의 원인"],
+     ["therm", "탈수 베이크", "약 120–150°C", "EMC에 흡수된 수분이 PI 경화 때 들뜸을 만듦"]],
+    [["litho", "감광성 PI 코팅 · 노광 · 현상", "스핀 코팅 → 소프트베이크 → 노광 → 현상(용제 또는 TMAH)", "비아 개구가 브리지 패드 피치를 따라가야 함"],
+     ["therm", "PI 경화", "저온 경화형 약 200–230°C, N₂", "접착층·EMC가 견디는 온도 이하로 선택. 경화 수축으로 휨 증가"],
+     ["dry", "descum · 시드 스퍼터", "O₂ 플라즈마 → Ti/Cu", "PI 탈가스로 진공·밀착 문제"],
+     ["litho", "배선용 PR 노광 · 현상", "얇은 액상 PR, 미세 L/S", "가장 촘촘한 층은 브리지 위"],
+     ["plate", "Cu 배선 도금", "황산동 도금", "선폭·두께 균일도"],
+     ["wet", "PR 박리 · 시드 식각", "솔벤트 스트리퍼 → Cu/Ti 습식 식각", "미세 배선 언더컷과 선폭 손실을 줄이려면 식각량 최소화"],
+     ["rep", "층 수만큼 반복", "PI → 시드 → 도금 → 박리·식각", "층마다 열 이력과 휨이 누적"],
+     ["plate", "최상층 패드 표면 처리 (ENEPIG)", "무전해 Ni/Pd/Au, 약 70–85°C 습식 욕조", "약품·온도가 PI·EMC·접착층을 공격하지 않는지 확인. 기판에 붙인 뒤에는 기판까지 약품에 노출되므로 지금 처리"],
+     ["wet", "임시 보호막 코팅", "용제 또는 수용성 박리형 보호막", "이후 C4 리플로우·다이싱·기판 실장 동안 패드 오염과 산화 방지"]],
+    [["dry", "상면 플라즈마 세정", "Ar/O₂", "본딩 밀착력"],
+     ["bond", "고내열 임시 접착제 코팅 · 본딩", "진공 열압착 약 150–200°C", "이후 리플로우(약 240–260°C)를 두 번 견뎌야 함. 이 흐름에서 가장 큰 재료 제약"],
+     ["insp", "본딩 보이드 검사", "IR 또는 초음파(SAT)", "보이드는 디본딩 때 크랙으로 이어짐"]],
+    [["dry", "레이저 디본딩 (캐리어 #1)", "유리 너머로 박리층에 레이저 조사", "레이저가 캐리어 #2 접착층에 닿지 않도록 파장·초점 관리"],
+     ["wet", "접착제 잔사 제거", "전용 솔벤트 세정", "같은 솔벤트가 캐리어 #2 접착층 가장자리를 녹이면 안 됨"],
+     ["dry", "포스트 아랫면 노출", "O₂/CF₄ 플라즈마 또는 얇은 연삭", "잔류 박리층 완전 제거"]],
+    [["litho", "패시베이션 · UBM 개구", "PI 코팅 → 노광 → 현상 → 경화", "PI 경화 온도가 캐리어 #2 접착제 한계 이하"],
+     ["dry", "UBM 시드 스퍼터", "Ti/Cu", "—"],
+     ["litho", "범프용 후막 PR", "범프 높이만큼", "—"],
+     ["plate", "Cu/Ni + SnAg 도금", "전해 도금", "Ni가 Cu–Sn 금속간화합물 성장을 늦춤"],
+     ["wet", "PR 박리 · 시드 식각", "솔벤트 → Cu/Ti 습식 식각", "SnAg가 식각액에 침식되지 않는 약품 선택"],
+     ["therm", "범프 리플로우", "플럭스 또는 포름산 분위기, 피크 약 240–260°C", "캐리어 #2 접착제의 첫 고온 노출"],
+     ["wet", "플럭스 세정", "수계 또는 준수계 세정 → 건조", "잔류 플럭스는 이후 언더필 보이드의 원인"]],
+    [["mech", "테이프 마운트 · 블레이드 다이싱", "유리 + 몰드 + RDL 적층 절단, DI수", "재료별 경도 차이로 칩핑·박리. 물이 접착층 계면에 스며들지 않게"],
+     ["wet", "세정 · 건조", "DI수, 스핀 건조", "다이싱 슬러지 제거"],
+     ["insp", "외관 검사", "AOI", "가장자리 박리 확인"]],
+    [["therm", "기판 · 유닛 프리베이크", "약 125°C", "흡습 수분은 리플로우 팝콘·보이드의 원인"],
+     ["bond", "플럭스 도포 · 매스 리플로우", "피크 약 240–260°C", "인터포저와 기판의 휨 차이로 비접합·브리징 위험. 캐리어 #2가 휨을 억제"],
+     ["wet", "플럭스 세정", "수계 세정 → 건조", "좁은 C4 틈의 잔류 플럭스가 언더필 보이드 원인"],
+     ["dry", "플라즈마", "Ar/O₂", "언더필 흐름성 향상"],
+     ["therm", "언더필 디스펜스 · 경화", "약 150–165°C", "필렛이 캐리어 #2 가장자리에 닿지 않게"],
+     ["insp", "X-ray · SAT", "접합·보이드 검사", "—"]],
+    [["dry", "유닛 레이저 디본딩 (캐리어 #2)", "패키지 하나씩 조사", "웨이퍼가 아니라 유닛 단위라 처리량이 낮음"],
+     ["wet", "접착제 잔사 제거", "전용 솔벤트 세정", "솔벤트가 기판 솔더레지스트·언더필을 침식하지 않아야 함. 잔사가 적은 박리형 접착제가 유리"]],
+    [["wet", "보호막 제거", "DI수 또는 용제", "패드 위 잔류물이 없어야 함"],
+     ["dry", "Ar/O₂ 플라즈마", "패드 유기물 제거", "Au 표면 활성화"],
+     ["insp", "KGI 전기 검사", "프로브 카드, 별도 테스트 패드", "접합 패드에 프로브 자국이 남지 않도록 테스트 패드를 따로 설계"],
+     ["insp", "코플래너리티 측정", "3D 광학", "TCB 조건을 정하는 입력값"]],
+    [["therm", "칩 · 패키지 베이크", "약 125°C", "흡습 제거"],
+     ["bond", "NCF 라미네이트(칩 쪽) 또는 플럭스", "웨이퍼 단계에서 칩에 NCF를 미리 붙이는 방식 가정", "순차 실장 때 옆 칩 접합부 재용융을 막는 데 NCF가 유리"],
+     ["bond", "ASIC TCB", "본드 헤드 순간 약 250–300°C, 스테이지 약 100–150°C", "휜 패키지 위 국부 평탄도. 스테이지 온도는 기판·언더필 한계 이하"]],
+    [["bond", "HBM TCB (좌우 순차)", "ASIC과 같은 방식", "HBM 열 한계, 먼저 붙은 ASIC 접합부 재용융 방지"],
+     ["insp", "X-ray 접합 검사", "브리지 위 미세 범프 중점", "—"]],
+    [["dry", "플라즈마", "Ar/O₂", "언더필 흐름성"],
+     ["therm", "언더필 디스펜스 · 경화", "약 150–165°C", "NCF를 썼다면 생략 가능. 칩과 칩 사이 필렛 관리"],
+     ["insp", "SAT", "보이드 검사", "—"]],
+    [["dry", "칩 뒷면 금속화 (BSM)", "솔더 TIM을 쓸 경우 칩 웨이퍼 단계에서 미리 Ti/Ni/Au", "칩 공급 단계 요구 사항이 됨"],
+     ["bond", "TIM · 리드 부착 · 경화", "약 125–150°C", "리드 휨과 TIM 두께(BLT) 관리"],
+     ["bond", "BGA 볼 부착 · 리플로우", "피크 약 240–250°C", "칩이 겪는 첫 전체 리플로우. 대안: BGA를 칩 실장 전에 붙이고 TCB 때 볼 지지 지그 사용"],
+     ["insp", "최종 테스트 · 마킹", "", "—"]]
   ];
 
   var ROWS = [
@@ -1000,10 +1115,29 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       return '<span class="' + (mats.indexOf(k) >= 0 ? "hot" : "") + '"><i style="background:var(' + MATS[k][1] + ')"></i>' + MATS[k][0] + "</span>";
     }).join("") + "</div>";
   }
+  function uopTable(ops) {
+    return '<div class="uop"><table><thead><tr><th>구분</th><th>단위 공정</th><th>일반적인 조건</th><th>제약 · 주의</th></tr></thead><tbody>' +
+      ops.map(function (o) {
+        return '<tr><td><span class="tg ' + o[0] + '">' + TG[o[0]] + "</span></td><td>" + esc(o[1]) + "</td><td>" + (o[2] ? esc(o[2]) : '<span class="na">—</span>') +
+          '</td><td class="cons">' + esc(o[3]) + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+  function renderFlowAll(cur) {
+    var box = document.getElementById("flowAll"), open = {};
+    box.querySelectorAll("details").forEach(function (d, k) { if (d.open) open[k] = true; });
+    box.innerHTML = STEPS_D.map(function (st, k) {
+      var cnt = {};
+      FLOW_D[k].forEach(function (o) { cnt[o[0]] = (cnt[o[0]] || 0) + 1; });
+      var chips = Object.keys(cnt).map(function (t) { return '<span class="tg ' + t + '">' + TG[t] + " " + cnt[t] + "</span>"; }).join("");
+      return '<details class="' + (k === cur ? "cur" : "") + '"' + (open[k] || k === cur ? " open" : "") + '><summary><span class="n">' + pad(k + 1) + "</span><b>" + esc(st.t) +
+        '</b><span class="cnt">' + chips + "</span></summary>" + uopTable(FLOW_D[k]) + "</details>";
+    }).join("");
+  }
   function single(sys, i) {
     var s = sys.steps[i];
     return '<div class="ph">STEP ' + pad(i + 1) + " · " + esc(s.ph) + "</div><h3>" + esc(s.t) + "</h3><p>" + esc(s.d) + "</p><ul>" +
-      s.p.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + '</ul><div class="why' + sys.why + '"><b>왜 이렇게 하나요?</b> ' + esc(s.w) + "</div>" + (s.c ? '<div class="why alt3"><b>기존 I-Cube E 흐름과 비교</b> ' + esc(s.c) + "</div>" : "") + legendHtml(s.mats, sys.keys);
+      s.p.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
+      (sys === SYS.d ? '<div class="uop-h">단위 공정 (일반적인 조건 기준, 가정)</div>' + uopTable(FLOW_D[i]) : "") + '<div class="why' + sys.why + '"><b>왜 이렇게 하나요?</b> ' + esc(s.w) + "</div>" + (s.c ? '<div class="why alt3"><b>기존 I-Cube E 흐름과 비교</b> ' + esc(s.c) + "</div>" : "") + legendHtml(s.mats, sys.keys);
   }
   function side(k, idxs) {
     var sys = SYS[k];
@@ -1034,7 +1168,7 @@ td:first-child { color: var(--muted); white-space: nowrap; }
       document.getElementById(sys.st).textContent = stepLabel(sys, i);
       detail.innerHTML = single(sys, i);
     }
-    if (mode === "d") renderOrder(i);
+    if (mode === "d") { renderOrder(i); renderFlowAll(i); }
     btns.forEach(function (b, k) { b.classList.toggle("cur", k === i); b.classList.toggle("done", k < i); b.setAttribute("aria-current", k === i ? "step" : "false"); });
     scrub.max = len() - 1; scrub.value = i;
     document.getElementById("counter").textContent = pad(i + 1) + " / " + len();
