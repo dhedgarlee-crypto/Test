@@ -1,0 +1,63 @@
+name: Build Kongi desktop pet (Windows exe)
+
+on:
+  push:
+    paths:
+      - "desktop-pet/**"
+      - ".github/workflows/build-pet.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop-pet
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: python -m pip install --upgrade pip pyinstaller pillow -r requirements.txt
+
+      - name: Make icon
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python -c "from PySide6.QtWidgets import QApplication; app=QApplication([]); import pet; pet.draw_kongi('idle',0,256).save('icon.png')"
+          python -c "from PIL import Image; Image.open('icon.png').save('icon.ico', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)])"
+
+      - name: Build exe
+        run: pyinstaller --noconfirm --clean --noconsole --onefile --name Kongi --icon icon.ico pet.py
+
+      - name: Smoke test (exe starts and stays up)
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath dist\Kongi.exe -PassThru
+          Start-Sleep -Seconds 15
+          if ($p.HasExited) { Write-Error "Kongi.exe exited early with code $($p.ExitCode)"; exit 1 }
+          Stop-Process -Id $p.Id -Force
+          Get-Item dist\Kongi.exe | Select-Object Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Kongi-exe
+          path: desktop-pet/dist/Kongi.exe
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: kongi-latest
+          name: 콩이 데스크톱 펫 (Windows)
+          target_commitish: ${{ github.sha }}
+          make_latest: true
+          body: |
+            Kongi.exe 를 받아서 더블클릭하면 바로 실행돼요. (Python 필요 없음)
+            Windows SmartScreen 경고가 뜨면 "추가 정보" → "실행"을 누르세요.
+          files: desktop-pet/dist/Kongi.exe
