@@ -5,7 +5,12 @@ Windows 화면 위를 돌아다니며 걷고, 뛰고, 점프하고, 앉고, 잠�
 
 ![동작 미리보기](preview.png)
 
-## 실행 방법 (Windows)
+## 가장 쉬운 방법: exe 받기 (Python 필요 없음)
+[Kongi.exe 다운로드](https://github.com/dhedgarlee-crypto/Test/releases/download/kongi-latest/Kongi.exe)를 받아서 더블클릭하세요.
+Windows SmartScreen 경고가 뜨면 **추가 정보 → 실행**을 누르면 돼요.
+이 exe는 `desktop-pet/` 폴더가 바뀔 때마다 GitHub Actions가 새로 만들어요.
+
+## Python으로 실행하기 (Windows)
 1. [Python](https://www.python.org/downloads/)을 설치하세요. 설치할 때 **"Add python.exe to PATH"**를 꼭 체크하세요.
 2. 이 `desktop-pet` 폴더에서 **`run.bat`**을 더블클릭하세요.
    처음 실행할 때 PySide6를 자동으로 설치해요. 1~2분 정도 걸릴 수 있어요.
