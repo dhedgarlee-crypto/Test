@@ -10,8 +10,47 @@
 """
 import math
 import random
+import subprocess
 import sys
 from pathlib import Path
+
+
+def ensure_pyside6():
+    """PySide6가 없으면 처음 한 번 자동으로 설치해요."""
+    try:
+        import PySide6  # noqa: F401
+        return
+    except ImportError:
+        pass
+    try:
+        import tkinter
+        from tkinter import messagebox
+        root = tkinter.Tk()
+        root.withdraw()
+    except Exception:
+        root = messagebox = None
+    if messagebox:
+        messagebox.showinfo("콩이", "처음 실행이라 필요한 프로그램(PySide6)을 설치할게요.\n"
+                                  "확인을 누르고 1~2분만 기다려 주세요.")
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "PySide6"],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                              creationflags=flags)
+    except Exception:
+        if messagebox:
+            messagebox.showerror("콩이", "설치에 실패했어요. 인터넷 연결을 확인하거나\n"
+                                       "명령 프롬프트에서 'pip install PySide6'를 실행해 주세요.")
+        sys.exit(1)
+    if root:
+        root.destroy()
+    import site
+    import importlib
+    site.addsitedir(site.getusersitepackages())
+    importlib.invalidate_caches()
+
+
+ensure_pyside6()
 
 from PySide6.QtCore import QPoint, QPointF, QRectF, Qt, QTimer
 from PySide6.QtGui import (QAction, QActionGroup, QBrush, QColor, QCursor, QIcon,
